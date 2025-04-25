@@ -1,14 +1,26 @@
-export const SHAPES = {
-    1: { symbol: '●', color: '#FF6B6B' },    // Круг
-    2: { symbol: '▲', color: '#4ECDC4' },    // Треугольник
-    4: { symbol: '■', color: '#FFD166' },    // Квадрат
-    8: { symbol: '⬟', color: '#A05195' },   // Пятиугольник (U+2B1F)
-    16: { symbol: '★', color: '#FFA500' },   // Звезда
-    32: { symbol: '♦', color: '#FF4500' },   // Ромб
-    64: { symbol: '♥', color: '#FF1493' },   // Сердце
-    128: { symbol: '♣', color: '#228B22' },  // Трефы
-    256: { symbol: '⚡', color: '#FFFF00' },  // Молния
-    512: { symbol: '☀', color: '#FFD700' },  // Солнце
-    1024: { symbol: '☘', color: '#32CD32' }, // Клевер
-    2048: { symbol: '♛', color: '#C0C0C0' }  // Корона
+export const SHAPES = { // ●▲■⬟★♦♥♣⚡☀☘♛
+    1: { symbol: '1', color: '#FF6B6B' },
+    2: { symbol: '2', color: '#4ECDC4' },
+    4: { symbol: '4', color: '#FFD166' },
+    8: { symbol: '8', color: '#A05195' },
+    16: { symbol: '16', color: '#FFA500' },
+    32: { symbol: '32', color: '#FF4500' },
+    64: { symbol: '64', color: '#FF1493' },
+    128: { symbol: '128', color: '#228B22' },
+    256: { symbol: '256', color: '#FFFF00' },
+    512: { symbol: '512', color: '#FFD700' },
+    1024: { symbol: '1024', color: '#32CD32' }, 
+    2048: { symbol: '2048', color: '#C0C0C0' }  
   };
+//  1: { symbol: '●', color: '#FF6B6B' },
+//  2: { symbol: '▲', color: '#4ECDC4' },
+//  4: { symbol: '■', color: '#FFD166' },
+//  8: { symbol: '⬟', color: '#A05195' },
+//  16: { symbol: '★', color: '#FFA500' },
+//  32: { symbol: '♦', color: '#FF4500' },
+//  64: { symbol: '♥', color: '#FF1493' },
+//  128: { symbol: '♣', color: '#228B22' },
+//  256: { symbol: '⚡', color: '#FFFF00' },
+//  512: { symbol: '☀', color: '#FFD700' },
+//  1024: { symbol: '☘', color: '#32CD32' }, 
+//  2048: { symbol: '♛', color: '#C0C0C0' }  

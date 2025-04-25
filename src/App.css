@@ -1,60 +1,212 @@
+/* Базовые стили */
 body {
+  margin: 0;
+  padding: 0;
   font-family: 'Noto Sans Symbols', sans-serif;
+  background: #242424;
+  color: rgb(255, 255, 255);
+  min-height: 100vh;
 }
 
-.cell {
-  font-family: 'Noto Sans Symbols', sans-serif;
-  font-weight: 700; /* Жирные символы */
-  transition: transform 0.2s;
+/* Основные настройки */
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  touch-action: manipulation;
 }
 
-.cell:hover {
-  transform: scale(1.05);
-}
-
-.cell-merge {
-  transform: scale(1.2);
-  opacity: 0.7;
-}
-
-/* От сборки */
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Фикс для iOS */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Стили игры */
+.game-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2vh;
+  box-sizing: border-box;
+}
+
+.game-board {
+  background-color: #2d2d2d;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+/* Стили клеток */
+.cell {
+  font-family: 'Noto Sans Symbols', sans-serif;
+  font-weight: 700;
+  transition: all 0.15s ease-out;
+  transform: scale(1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.cell-new {
+  animation: appear 0.15s;
+}
+
+.cell-merge {
+  animation: merge 0.3s;
+}
+
+.cell-symbol {
+  display: flex;
+  justify-Content: center;
+  align-Items: center;
+  font-size: 90%;
+  color: #ffffff;
+  /* Белый цвет символов */
+  text-shadow: 3.5px 2px 1px rgba(0, 0, 0, 0.75);
+  /* Тень для лучшей читаемости */
+  transition: all 0.2s ease;
+  /* Плавное изменение цвета */
+}
+
+/* Анимации */
+@keyframes appear {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes merge {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Кнопки */
+button {
+  font-family: 'Noto Sans Symbols', sans-serif;
+  background: #3a3a3a;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #4a4a4a;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 600px) {
+  .game-board {
+    padding: 10px;
+  }
+
+  .cell {
+    font-size: 0.8em;
+  }
+}
+
+/* Общий стиль для всех экранов */
+.screen-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height: 80vh;
+  text-align: center;
 }
 
-.App-link {
-  color: #61dafb;
+/* Стиль для кнопок меню */
+.menu-button {
+  margin: 10px;
+  width: 200px;
+  max-width: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Сетка для кнопок выбора размера */
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0px;
+  margin-top: 20px;
+}
+
+.rating-list {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px 0;
+}
+
+.rating-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.rating-item img {
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.rating-item span:first-of-type {
+  flex-grow: 1;
+}
+
+.rating-item span:last-child {
+  font-weight: bold;
+  color: #4bb34b;
+}
+
+@media (max-width: 500px) {
+  .screen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 30px;
+    text-align: center;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media (orientation: landscape) {
+  .game-container {
+    flex-direction: row;
+  }
+  .game-controls {
+    flex-direction: column;
+    width: auto;
   }
 }
 
-
+@media (max-width: 320px) {
+  .cell-symbol {
+    font-size: 0.8em;
+  }
+}

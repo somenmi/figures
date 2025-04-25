@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@vkontakte/vk-bridge": "^2.15.6",
     "@vkontakte/vkui": "^7.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
