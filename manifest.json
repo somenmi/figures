@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
     "version": "1.0.0",
-    "name": "2048 с фигурами",
-    "description": "Классическая игра 2048 с геометрическими фигурами",
-    "author": "Ваше имя",
+    "name": "Фигуры",
+    "description": "Фигуры - игра похожая на 2048, но вместо цифр фигуры.",
+    "author": "Виктор AWALORES",
     "vk_settings": {
       "storage": true,
       "friends": false,

@@ -18,10 +18,14 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "vercel-build": "npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
+    "rules": {
+    "no-undef": "off"
+  },
     "extends": [
       "react-app",
       "react-app/jest"
@@ -38,5 +42,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "homepage": "https://ваш-хостинг.com",
+  "build": {
+    "manifest": "./manifest.json",
+    "env": {
+      "NODE_ENV": "production"
+    }
   }
 }
