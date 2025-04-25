@@ -4,6 +4,19 @@ import { saveGame, loadGame, saveRating } from '../utils/storage';
 import bridge from '@vkontakte/vk-bridge';
 import { Button, Div, Title } from '@vkontakte/vkui';
 
+// Функция для объединения фигур
+const mergeShapes = (row, setScore) => {
+  const newRow = [...row];
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1] && newRow[i] !== 0) {
+      newRow[i] *= 2;
+      newRow[i + 1] = 0;
+      if (setScore) setScore(prev => prev + newRow[i]);
+    }
+  }
+  return newRow.filter(cell => cell !== 0);
+};
+
 const GameScreen = ({ size, savedData, onBackToMenu }) => {
   // Инициализация состояния игры
   const [grid, setGrid] = useState(() => {
@@ -152,8 +165,6 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
   }, [size]);
 
   return (
-    <div className="game-container">
-      <div className="game-board">
         <div style={{
           touchAction: 'manipulation',
           height: '100vh',
@@ -230,8 +241,6 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
             </div>
           )}
         </div>
-      </div>
-    </div>
   );
 };
 

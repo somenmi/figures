@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Title } from '@vkontakte/vkui';
 import { loadGame } from '../utils/storage';
 
@@ -8,44 +8,73 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
 
   useEffect(() => {
     const checkSavedGames = async () => {
-      const sizes = [4, 6, 8];
-      for (const size of sizes) {
-        const game = await loadGame(size);
-        if (game) {
-          setHasSavedGame(true);
-          break;
+      try {
+        for (const size of sizes) {
+          const game = await loadGame(size);
+          if (game) {
+            setHasSavedGame(true);
+            break;
+          }
         }
+      } catch (error) {
+        console.error('Error checking saved games:', error);
       }
     };
+    
     checkSavedGames();
   }, []);
+
   return (
-    <div className="screen-container">
-      <Title level="1" style={{ marginBottom: '30px', scale: '350%' }}>中凵⺁丫尸Ђ丨</Title>
-      <div className="size-grid">
-        {sizes.map(size => (
-          <Button
-            key={size}
-            className="menu-button"
-            onClick={() => onStartGame(size)}
-            style={{ width: '70px' }}
-          >
-            {size}x{size}
-          </Button>
-        ))}
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      padding: '20px',
+      textAlign: 'center'
+    }}>
+      <Title level="1" style={{ marginBottom: '40px', fontSize: '32px' }}>
+        中凵⺁丫尸Ђ丨
+      </Title>
+
+      {hasSavedGame && (
+        <Button 
+          size="l"
+          style={{ width: '200px', marginBottom: '15px' }}
+          onClick={onContinueGame}
+        >
+          Продолжить
+        </Button>
+      )}
+
+      <div style={{ marginBottom: '30px' }}>
+        <Title level="2" style={{ marginBottom: '15px' }}>Новая игра:</Title>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {sizes.map(size => (
+            <Button
+              key={size}
+              size="m"
+              onClick={() => onStartGame(size)}
+              style={{ width: '70px' }}
+            >
+              {size}x{size}
+            </Button>
+          ))}
+        </div>
       </div>
 
-      <div style={{ marginTop: '10px' }}>
-        <Button
-          className="menu-button"
+      <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+        <Button 
+          size="l"
+          style={{ width: '150px' }}
           onClick={onShowRating}
         >
           Рейтинг
         </Button>
-      </div>
-      <div style={{ marginTop: '10px' }}>
-        <Button
-          className="menu-button"
+        <Button 
+          size="l"
+          style={{ width: '150px' }}
           onClick={onShowRules}
         >
           Правила

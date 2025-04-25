@@ -1,27 +1,81 @@
+import React, { useEffect, useState } from 'react';
+import { Button, Title } from '@vkontakte/vkui';
+import { getRatings } from '../utils/storage';
+
 const RatingScreen = ({ gridSize, onBack }) => {
   const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
-    const load = async () => {
-      const data = await getRatings(gridSize);
-      setRatings(data);
+    const loadRatings = async () => {
+      try {
+        const data = await getRatings(gridSize);
+        setRatings(data);
+      } catch (error) {
+        console.error('Ошибка загрузки рейтинга:', error);
+      }
     };
-    load();
+
+    loadRatings();
   }, [gridSize]);
 
   return (
-    <div className="screen-container">
-      <Title level="1">Рейтинг {gridSize}x{gridSize}</Title>
+    <div style={{ 
+      padding: '20px',
+      textAlign: 'center'
+    }}>
+      <Title level="1" style={{ marginBottom: '20px' }}>
+        Рейтинг {gridSize}x{gridSize}
+      </Title>
       
-      <div className="rating-list">
-        {ratings.map((item, i) => (
-          <div key={item.id} className="rating-item">
-            <img src={item.photo} alt="" width={40} height={40} />
-            <span>{i+1}. {item.name}</span>
-            <span>{item.score}</span>
-          </div>
-        ))}
-      </div>
+      {ratings.length > 0 ? (
+        <div style={{ 
+          maxWidth: '500px',
+          margin: '0 auto 20px',
+          textAlign: 'left'
+        }}>
+          {ratings.map((player, index) => (
+            <div key={player.id} style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '10px',
+              padding: '10px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '8px'
+            }}>
+              <span style={{ 
+                width: '30px',
+                fontWeight: 'bold'
+              }}>
+                {index + 1}.
+              </span>
+              <img 
+                src={player.photo} 
+                alt="" 
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  margin: '0 15px'
+                }} 
+              />
+              <span style={{ flexGrow: 1 }}>{player.name}</span>
+              <span style={{ fontWeight: 'bold' }}>{player.score}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>Рейтинг пока пуст</p>
+      )}
+
+      <Button 
+        size="l"
+        onClick={onBack}
+        style={{ marginTop: '20px' }}
+      >
+        Назад в меню
+      </Button>
     </div>
   );
 };
+
+export default RatingScreen;

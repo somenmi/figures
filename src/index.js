@@ -5,8 +5,24 @@ import './App.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import bridge from '@vkontakte/vk-bridge';
+import { VK_APP_ID } from './vkConfig';
 
-bridge.send('VKWebAppInit');
+// Инициализация
+bridge.send('VKWebAppInit').then(() => {
+  console.log('VK Bridge initialized');
+});
+
+// Для тестирования вне VK
+if (!window.vkBridge) {
+  window.vkBridge = {
+    send: (method, params) => {
+      console.log(`VK Bridge mock: ${method}`, params);
+      return Promise.resolve({});
+    },
+    subscribe: (fn) => fn({}),
+    supports: () => true
+  };
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

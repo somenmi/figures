@@ -1,3 +1,5 @@
+import bridge from '@vkontakte/vk-bridge';
+
 export const saveGame = async (gridSize, data) => {
     try {
       await bridge.send('VKWebAppStorageSet', {
@@ -14,7 +16,7 @@ export const saveGame = async (gridSize, data) => {
       const data = await bridge.send('VKWebAppStorageGet', {
         keys: [`game_${gridSize}_${bridge.getUserInfo().id}`]
       });
-      return data.keys[0] ? JSON.parse(data.keys[0].value) : null;
+      return data.keys[0]?.value ? JSON.parse(data.keys[0].value) : null;
     } catch (e) {
       console.error('Load error:', e);
       return null;
