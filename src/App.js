@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
-import RulesScreen from './components/RulesScreen'; // Нужно создать этот компонент
-import RatingScreen from './components/RatingScreen'; // Нужно создать этот компонент
+import RulesScreen from './components/RulesScreen';
+import RatingScreen from './components/RatingScreen';
+import { loadGame } from './utils/storage'; // Добавьте этот импорт
 
-const App = () => {
+function App() {
   const [screen, setScreen] = useState('menu');
   const [gridSize, setGridSize] = useState(4);
   const [savedGame, setSavedGame] = useState(null);
 
+  // Функция для продолжения игры
   const handleContinue = async () => {
     const sizes = [4, 6, 8];
     for (const size of sizes) {
-      const game = await loadGame(size);
+      const game = await loadGame(size); // Теперь loadGame определен
       if (game) {
         setGridSize(size);
         setSavedGame(game);
@@ -23,7 +25,7 @@ const App = () => {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="app-container">
       {screen === 'menu' && (
         <MainMenu
           onStartGame={(size) => {
@@ -45,19 +47,16 @@ const App = () => {
         />
       )}
       
-      {screen === 'rules' && (
-        <RulesScreen 
-          onBack={() => setScreen('menu')}
-        />
-      )}
+      {screen === 'rules' && <RulesScreen onBack={() => setScreen('menu')} />}
       
       {screen === 'rating' && (
-        <RatingScreen
+        <RatingScreen 
+          gridSize={gridSize}
           onBack={() => setScreen('menu')}
         />
       )}
     </div>
   );
-};
+}
 
 export default App;
