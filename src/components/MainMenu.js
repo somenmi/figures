@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Title, Button } from '@vkontakte/vkui';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Button, Title } from '@vkontakte/vkui';
 import { Icon24Game } from '@vkontakte/icons';
 import { loadGame } from '../utils/storage';
 
 const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) => {
-  const sizes = [4, 6, 8];
+  // Используем useMemo для стабилизации массива sizes
+  const sizes = useMemo(() => [4, 6, 8], []);
   const [hasSavedGame, setHasSavedGame] = useState(false);
 
   useEffect(() => {
@@ -21,9 +22,9 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
         console.error('Error checking saved games:', error);
       }
     };
-    
+
     checkSavedGames();
-  }, [sizes]);
+  }, [sizes]); // Теперь sizes стабилен между рендерами
 
   return (
     <div style={{
@@ -40,7 +41,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
       </Title>
 
       {hasSavedGame && (
-        <Button 
+        <Button
           size="l"
           style={{ width: '200px', marginBottom: '15px' }}
           onClick={onContinueGame}
@@ -67,14 +68,14 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
       </div>
 
       <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-        <Button 
+        <Button
           size="l"
           style={{ width: '150px' }}
           onClick={onShowRating}
         >
           Рейтинг
         </Button>
-        <Button 
+        <Button
           size="l"
           style={{ width: '150px' }}
           onClick={onShowRules}

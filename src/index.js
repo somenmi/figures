@@ -1,37 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import './App.css';
+import { createRoot } from 'react-dom/client';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import '@vkontakte/vkui/dist/vkui.css';
 import bridge from '@vkontakte/vk-bridge';
-// import { VK_APP_ID } from './vkConfig';
 
-// Инициализация
-bridge.send('VKWebAppInit').then(() => {
-  console.log('VK Bridge initialized');
-});
+// Инициализация VK Bridge
+bridge.send('VKWebAppInit').catch(console.log);
 
-// Для тестирования вне VK
-if (!window.vkBridge) {
-  window.vkBridge = {
-    send: (method, params) => {
-      console.log(`VK Bridge mock: ${method}`, params);
-      return Promise.resolve({});
-    },
-    subscribe: (fn) => fn({}),
-    supports: () => true
-  };
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Рендеринг приложения
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
