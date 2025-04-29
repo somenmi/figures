@@ -47,7 +47,11 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
   }, [size]);
 
   const moveRight = useCallback((grid, setScore) => {
+    if (!grid || !grid.length) return grid;
+
     const newGrid = grid.map(row => {
+      if (!row) return Array(size).fill(0);
+
       const filteredRow = row.filter(cell => cell !== 0);
       const mergedRow = mergeShapes(filteredRow, setScore);
       return [...Array(row.length - mergedRow.length).fill(0), ...mergedRow];
@@ -56,7 +60,11 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
   }, [size]);
 
   const moveUp = useCallback((grid, setScore) => {
+    if (!grid || !grid.length) return grid;
+
     const newGrid = grid.map(row => [...row]);
+    if (!row) return Array(size).fill(0);
+
     for (let col = 0; col < newGrid[0].length; col++) {
       let column = newGrid.map(row => row[col]).filter(cell => cell !== 0);
       column = mergeShapes(column, setScore);
@@ -69,7 +77,11 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
   }, [size]);
 
   const moveDown = useCallback((grid, setScore) => {
+    if (!grid || !grid.length) return grid;
+
     const newGrid = grid.map(row => [...row]);
+    if (!row) return Array(size).fill(0);
+    
     for (let col = 0; col < newGrid[0].length; col++) {
       let column = newGrid.map(row => row[col]).filter(cell => cell !== 0);
       column = mergeShapes(column, setScore);
