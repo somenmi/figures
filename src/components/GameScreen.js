@@ -182,8 +182,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
       display: 'flex',
       flexDirection: 'column',
       padding: '10px',
-      boxSizing: 'border-box',
-      backgroundColor: '#242424'
+      boxSizing: 'border-box'
     },
     header: {
       display: 'flex',
