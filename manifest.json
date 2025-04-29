@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "name": "Фигуры",
     "description": "Фигуры - игра похожая на 2048, но вместо цифр фигуры.",
+    "scopes": ["storage"],
     "author": "Виктор AWALORES",
     "vk_settings": {
       "storage": true,

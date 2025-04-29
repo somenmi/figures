@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Title } from '@vkontakte/vkui';
+import { Button, Title, Button } from '@vkontakte/vkui';
+import { Icon24Game } from '@vkontakte/icons';
 import { loadGame } from '../utils/storage';
 
 const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) => {
@@ -55,6 +56,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
             <Button
               key={size}
               size="m"
+              before={<Icon24Game />}
               onClick={() => onStartGame(size)}
               style={{ width: '70px' }}
             >
