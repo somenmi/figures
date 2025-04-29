@@ -22,7 +22,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
     if (savedData && savedData.grid && savedData.grid.length) {
       return savedData.grid;
     }
-  
+
     // Создаем гарантированно валидную сетку
     const newGrid = Array(size).fill().map(() => Array(size).fill(0));
     return addRandomShape(addRandomShape(newGrid));
@@ -35,10 +35,10 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
   // Функции движения с useCallback
   const moveLeft = useCallback((grid, setScore) => {
     if (!grid || !grid.length) return grid;
-    
+
     const newGrid = grid.map(row => {
       if (!row) return Array(size).fill(0);
-      
+
       const filteredRow = row.filter(cell => cell !== 0);
       const mergedRow = mergeShapes(filteredRow, setScore);
       return [...mergedRow, ...Array(row.length - mergedRow.length).fill(0)];
@@ -63,16 +63,16 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
     if (!grid || !grid.length) return grid;
 
     const newGrid = grid.map(row => [...row]);
-    if (!row) return Array(size).fill(0);
 
     for (let col = 0; col < newGrid[0].length; col++) {
       let column = newGrid.map(row => row[col]).filter(cell => cell !== 0);
       column = mergeShapes(column, setScore);
       column = [...column, ...Array(newGrid.length - column.length).fill(0)];
-      column.forEach((cell, row) => {
-        newGrid[row][col] = cell;
+      column.forEach((cell, rowIndex) => {
+        newGrid[rowIndex][col] = cell;
       });
     }
+
     return addRandomShape(newGrid);
   }, [size]);
 
@@ -80,16 +80,16 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
     if (!grid || !grid.length) return grid;
 
     const newGrid = grid.map(row => [...row]);
-    if (!row) return Array(size).fill(0);
-    
+
     for (let col = 0; col < newGrid[0].length; col++) {
       let column = newGrid.map(row => row[col]).filter(cell => cell !== 0);
       column = mergeShapes(column, setScore);
       column = [...Array(newGrid.length - column.length).fill(0), ...column];
-      column.forEach((cell, row) => {
-        newGrid[row][col] = cell;
+      column.forEach((cell, rowIndex) => {
+        newGrid[rowIndex][col] = cell;
       });
     }
+
     return addRandomShape(newGrid);
   }, [size]);
 
@@ -257,7 +257,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
 // Вспомогательные функции
 const addRandomShape = (grid) => {
   if (!grid || !grid.length) return grid; // Добавлена проверка
-  
+
   const emptyCells = [];
   grid.forEach((row, rowIndex) => {
     // Добавьте проверку на существование row
