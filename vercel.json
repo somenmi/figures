@@ -1,14 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
+  "public": true,
   "routes": [
     {
       "src": "/static/(.*)",
@@ -18,11 +10,37 @@
       "continue": true
     },
     {
+      "src": "/404",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/500",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html",
       "headers": {
         "Cache-Control": "no-cache"
       }
+    }
+  ],
+  "headers": [
+    {
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/index.html",
+      "permanent": true
     }
   ]
 }

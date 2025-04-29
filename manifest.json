@@ -1,21 +1,30 @@
 {
-    "manifest_version": 2,
-    "version": "1.0.0",
-    "name": "Фигуры",
-    "description": "Фигуры - игра похожая на 2048, но вместо цифр фигуры.",
-    "scopes": ["storage"],
-    "author": "Виктор AWALORES",
-    "vk_settings": {
-      "storage": true,
-      "friends": false,
-      "photos": false,
-      "video": false
+  "manifest_version": 2,
+  "version": "1.0.0",
+  "name": "Фигуры",
+  "description": "Фигуры - игра похожая на 2048, но вместо цифр фигуры",
+  "scopes": ["storage"],
+  "author": "Виктор AWALORES",
+  "permissions": [
+    "VKWebAppStorageGet",
+    "VKWebAppStorageSet",
+    "VKWebAppInit"
+  ],
+  "icons": [
+    {
+      "src": "public/logo192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
-    "permissions": ["storage"],
-    "icons": {
-      "128": "icon_128.png"
-    },
-    "start_url": "/index.html",
-    "orientation": "portrait",
-    "display": "fullscreen"
-  }
+    {
+      "src": "public/logo512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/index.html",
+  "orientation": "portrait",
+  "display": "fullscreen",
+  "background_color": "#242424",
+  "theme_color": "#242424"
+}

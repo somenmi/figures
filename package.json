@@ -50,6 +50,7 @@
   "homepage": ".",
   "build": {
     "manifest": "./manifest.json",
+    "includePaths": ["public"],
     "env": {
       "NODE_ENV": "production"
     }
