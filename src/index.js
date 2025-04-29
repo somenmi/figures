@@ -5,7 +5,7 @@ import './App.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import bridge from '@vkontakte/vk-bridge';
-import { VK_APP_ID } from './vkConfig';
+// import { VK_APP_ID } from './vkConfig';
 
 // Инициализация
 bridge.send('VKWebAppInit').then(() => {

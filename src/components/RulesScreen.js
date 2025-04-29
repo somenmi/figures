@@ -9,7 +9,6 @@ const RulesScreen = ({ onBack }) => {
       <div style={{ 
         maxWidth: '500px',
         marginBottom: '30px',
-        textAlign: 'left',
         lineHeight: '1.6',
         textAlign: 'center'
       }}>

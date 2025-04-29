@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
@@ -11,7 +11,7 @@ function App() {
   const [savedGame, setSavedGame] = useState(null);
 
   // Функция для продолжения игры
-  const handleContinue = async () => {
+  const handleContinue = useCallback(async () => {
     const sizes = [4, 6, 8];
     for (const size of sizes) {
       const game = await loadGame(size); // Теперь loadGame определен
@@ -22,7 +22,7 @@ function App() {
         break;
       }
     }
-  };
+  }, []);
 
   return (
     <div className="app-container">

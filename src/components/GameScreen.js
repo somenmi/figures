@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import GameGrid from './GameGrid';
-import { saveGame, loadGame, saveRating } from '../utils/storage';
+import { saveGame, saveRating } from '../utils/storage';
 import bridge from '@vkontakte/vk-bridge';
-import { Button, Div, Title } from '@vkontakte/vkui';
+import { Button, Title } from '@vkontakte/vkui';
 
 // Функция для объединения фигур
 const mergeShapes = (row, setScore) => {
@@ -122,7 +122,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
       saveRating(size, score); // Сохраняем в рейтинг
       saveGame(size, null); // Удаляем сохранённую игру
     }
-  }, [grid, score, size, gameOver]);
+  }, [grid, score, size, gameOver, handleMove]);
 
   // Обработка клавиш (оставьте вашу реализацию)
   useEffect(() => {
@@ -162,7 +162,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [size]);
+  }, [size, calculateCellSize]);
 
   return (
         <div style={{

@@ -22,7 +22,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
     };
     
     checkSavedGames();
-  }, []);
+  }, [sizes]);
 
   return (
     <div style={{
