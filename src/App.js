@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
@@ -14,7 +14,7 @@ function App() {
   const handleContinue = useCallback(async () => {
     const sizes = [4, 6, 8];
     for (const size of sizes) {
-      const game = await loadGame(size); // Теперь loadGame определен
+      const game = await loadGame(size);
       if (game) {
         setGridSize(size);
         setSavedGame(game);
@@ -38,7 +38,7 @@ function App() {
           onShowRating={() => setScreen('rating')}
         />
       )}
-      
+
       {screen === 'game' && (
         <GameScreen
           size={gridSize}
@@ -46,11 +46,11 @@ function App() {
           onBackToMenu={() => setScreen('menu')}
         />
       )}
-      
+
       {screen === 'rules' && <RulesScreen onBack={() => setScreen('menu')} />}
-      
+
       {screen === 'rating' && (
-        <RatingScreen 
+        <RatingScreen
           gridSize={gridSize}
           onBack={() => setScreen('menu')}
         />

@@ -19,11 +19,13 @@ const mergeShapes = (row, setScore) => {
 const GameScreen = ({ size, savedData, onBackToMenu }) => {
   // Инициализация состояния игры
   const [grid, setGrid] = useState(() => {
-    if (savedData) return savedData.grid;
-
+    if (savedData && savedData.grid && savedData.grid.length) {
+      return savedData.grid;
+    }
+  
+    // Создаем гарантированно валидную сетку
     const newGrid = Array(size).fill().map(() => Array(size).fill(0));
-    const gridWithShapes = addRandomShape(newGrid);
-    return addRandomShape(gridWithShapes);
+    return addRandomShape(addRandomShape(newGrid));
   });
 
   const [score, setScore] = useState(savedData?.score || 0);
@@ -32,13 +34,17 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
 
   // Функции движения с useCallback
   const moveLeft = useCallback((grid, setScore) => {
+    if (!grid || !grid.length) return grid;
+    
     const newGrid = grid.map(row => {
+      if (!row) return Array(size).fill(0);
+      
       const filteredRow = row.filter(cell => cell !== 0);
       const mergedRow = mergeShapes(filteredRow, setScore);
       return [...mergedRow, ...Array(row.length - mergedRow.length).fill(0)];
     });
     return addRandomShape(newGrid);
-  }, []);
+  }, [size]);
 
   const moveRight = useCallback((grid, setScore) => {
     const newGrid = grid.map(row => {
@@ -47,7 +53,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
       return [...Array(row.length - mergedRow.length).fill(0), ...mergedRow];
     });
     return addRandomShape(newGrid);
-  }, []);
+  }, [size]);
 
   const moveUp = useCallback((grid, setScore) => {
     const newGrid = grid.map(row => [...row]);
@@ -60,7 +66,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
       });
     }
     return addRandomShape(newGrid);
-  }, []);
+  }, [size]);
 
   const moveDown = useCallback((grid, setScore) => {
     const newGrid = grid.map(row => [...row]);
@@ -73,7 +79,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
       });
     }
     return addRandomShape(newGrid);
-  }, []);
+  }, [size]);
 
   // Проверка конца игры
   const isGameOver = useCallback((grid) => {
@@ -238,12 +244,18 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
 
 // Вспомогательные функции
 const addRandomShape = (grid) => {
+  if (!grid || !grid.length) return grid; // Добавлена проверка
+  
   const emptyCells = [];
   grid.forEach((row, rowIndex) => {
-    row.forEach((cell, colIndex) => {
-      if (cell === 0) emptyCells.push([rowIndex, colIndex]);
-    });
+    // Добавьте проверку на существование row
+    if (row && row.length) {
+      row.forEach((cell, colIndex) => {
+        if (cell === 0) emptyCells.push([rowIndex, colIndex]);
+      });
+    }
   });
+
   if (emptyCells.length === 0) return grid;
 
   const [row, col] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
