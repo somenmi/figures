@@ -49,8 +49,10 @@
   },
   "homepage": ".",
   "build": {
-    "manifest": "./manifest.json",
-    "includePaths": ["public"],
+    "manifest": "./public/manifest.json",
+    "includePaths": [
+      "public"
+    ],
     "env": {
       "NODE_ENV": "production"
     }
