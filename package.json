@@ -47,6 +47,10 @@
       "last 1 safari version"
     ]
   },
+  "resolutions": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "build": {
     "manifest": "./public/manifest.json",
     "includePaths": [
