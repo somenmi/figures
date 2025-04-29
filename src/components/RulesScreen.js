@@ -1,29 +1,34 @@
 import React from 'react';
-import { Button, Title } from '@vkontakte/vkui';
+import { Button, Title, Div } from '@vkontakte/vkui';
+import '../RulesScreen.css';
 
-const RulesScreen = ({ onBack }) => {
+const RulesScreen = ({ onBack, buttonColor }) => {
   return (
-    <div className="screen-container">
-      <Title level="1" style={{ marginBottom: '20px', scale: '200%' }}>Правила игры</Title>
-      
-      <div style={{ 
-        maxWidth: '500px',
-        marginBottom: '30px',
-        lineHeight: '1.6',
-        textAlign: 'center'
-      }}>
-        <p style={{color: '#baff4a' }}>① Используйте стрелки или свайпы для перемещения фигур</p>
-        <p style={{color: '#ffa74a' }}>② Одинаковые фигуры объединяются в следующую по уровню</p>
-        <p style={{color: '#ff4a62' }}>③ Цель - получить фигуру 2048</p>
-      </div> 
+    <Div className="rules-container">
+      <Title level="1" className="rules-title">
+      冂尸升乃凵入闩
+      </Title>
 
-      <Button 
-        className="menu-button"
+      <Div className="rules-list">
+        <p className="rule rule-1">Используйте стрелки или свайпы для перемещения фигур</p>
+        <p className="rule rule-2">Одинаковые фигуры объединяются в следующую по уровню</p>
+        <p className="rule rule-3">Цель - получить фигуру 2048</p>
+      </Div>
+      
+      <Button
+        mode="primary"
+        appearance="overlay"
+        style={{
+          backgroundColor: buttonColor,
+          '--vkui--color_background_primary': buttonColor,
+          '--vkui--color_background_primary_hover': `${buttonColor}CC`,
+          '--vkui--color_background_primary_active': `${buttonColor}99`
+        }}
         onClick={onBack}
       >
         Назад в меню
       </Button>
-    </div>
+    </Div>
   );
 };
 

@@ -1,12 +1,30 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Title } from '@vkontakte/vkui';
-import { Icon24Game } from '@vkontakte/icons';
+import { Button, Title, Div, Popover } from '@vkontakte/vkui';
+import { Icon24Game, Icon24PaletteOutline } from '@vkontakte/icons';
 import { loadGame } from '../utils/storage';
+import '../MainMenu.css';
 
 const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) => {
-  // Используем useMemo для стабилизации массива sizes
   const sizes = useMemo(() => [4, 6, 8], []);
   const [hasSavedGame, setHasSavedGame] = useState(false);
+  const [buttonColor, setButtonColor] = useState(
+    localStorage.getItem('buttonColor') || '#5181B8'
+  );
+  const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const colorPresets = [
+    { value: '#5181B8', label: 'VK Синий' },
+    { value: '#FF5C77', label: 'Розовый' },
+    { value: '#4BB34B', label: 'Зеленый' },
+    { value: '#FFA000', label: 'Оранжевый' },
+    { value: '#8A2BE2', label: 'Фиолетовый' },
+  ];
+
+  const handleColorChange = (color) => {
+    setButtonColor(color);
+    localStorage.setItem('buttonColor', color);
+    setShowColorPicker(false);
+  };
 
   useEffect(() => {
     const checkSavedGames = async () => {
@@ -24,42 +42,36 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
     };
 
     checkSavedGames();
-  }, [sizes]); // Теперь sizes стабилен между рендерами
+  }, [sizes]);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      padding: '20px',
-      textAlign: 'center'
-    }}>
-      <Title level="1" style={{ marginBottom: '40px', fontSize: '32px' }}>
+    <div className="menu-container">
+      <Title level="1" className="game-title" style={{ marginBottom: '36px', fontSize: '46px' }}>
         中凵⺁丫尸Ђ丨
       </Title>
 
       {hasSavedGame && (
         <Button
           size="l"
-          style={{ width: '200px', marginBottom: '15px' }}
+          className="menu-button"
+          style={{ backgroundColor: buttonColor }}
           onClick={onContinueGame}
         >
           Продолжить
         </Button>
       )}
 
-      <div style={{ marginBottom: '30px' }}>
-        <Title level="2" style={{ marginBottom: '15px' }}>Новая игра:</Title>
-        <div style={{ display: 'flex', gap: '10px' }}>
+      <div className="game-sizes-container">
+        <Title level="2" className="section-title" style={{ marginBottom: '22px', fontSize: '20px' }}>廾口乃升牙 凵厂尸丹:</Title>
+        <div className="game-sizes">
           {sizes.map(size => (
             <Button
               key={size}
               size="m"
               before={<Icon24Game />}
+              className="size-button"
+              style={{ backgroundColor: buttonColor }}
               onClick={() => onStartGame(size)}
-              style={{ width: '70px' }}
             >
               {size}x{size}
             </Button>
@@ -67,22 +79,67 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+      <div className="action-buttons">
         <Button
           size="l"
-          style={{ width: '150px' }}
-          onClick={onShowRating}
+          className="action-button"
+          style={{ backgroundColor: buttonColor }}
+          onClick={() => onShowRating(buttonColor)}
         >
           Рейтинг
         </Button>
         <Button
           size="l"
-          style={{ width: '150px' }}
-          onClick={onShowRules}
+          className="action-button"
+          style={{ backgroundColor: buttonColor }}
+          onClick={() => onShowRules(buttonColor)} // Передаем цвет при клике
         >
           Правила
         </Button>
       </div>
+
+      {/* Кнопка выбора цвета */}
+      <Popover
+        action="click"
+        shown={showColorPicker}
+        onShownChange={setShowColorPicker}
+        style={{ position: 'absolute', left: '-70px' }}
+        content={
+          <Div className="color-picker-popover">
+            <h3 className="color-picker-title">Выберите цвет кнопок</h3>
+            <div className="color-presets">
+              {colorPresets.map((color) => (
+                <button
+                  key={color.value}
+                  className="color-option"
+                  style={{ backgroundColor: color.value }}
+                  onClick={() => handleColorChange(color.value)}
+                  title={color.label}
+                />
+              ))}
+            </div>
+            <div className="custom-color-input">
+              <span>Свой цвет:</span>
+              <input
+                type="color"
+                value={buttonColor}
+                onChange={(e) => handleColorChange(e.target.value)}
+              />
+            </div>
+          </Div>
+        }
+      >
+        <Button
+          before={<Icon24PaletteOutline />}
+          size="m"
+          mode="outline"
+          className="color-picker-button"
+          style={{ margin: '28px' }}
+        >
+          Цвет кнопок
+        </Button>
+      </Popover>
+
     </div>
   );
 };

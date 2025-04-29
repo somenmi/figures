@@ -7,8 +7,16 @@ import { loadGame } from './utils/storage'; // Добавьте этот имп�
 
 function App() {
   const [screen, setScreen] = useState('menu');
+  const [screenProps, setScreenProps] = useState({});
   const [gridSize, setGridSize] = useState(4);
   const [savedGame, setSavedGame] = useState(null);
+  const [currentColor, setCurrentColor] = useState('defaultColor');
+
+  const handleShowRating = (color) => {
+    setCurrentColor(color); // Сохраняем цвет
+    setScreen('rating');
+    setScreenProps({ buttonColor: color });
+  };
 
   // Функция для продолжения игры
   const handleContinue = useCallback(async () => {
@@ -35,7 +43,7 @@ function App() {
           }}
           onContinueGame={handleContinue}
           onShowRules={() => setScreen('rules')}
-          onShowRating={() => setScreen('rating')}
+          onShowRating={handleShowRating}
         />
       )}
 
@@ -47,12 +55,17 @@ function App() {
         />
       )}
 
-      {screen === 'rules' && <RulesScreen onBack={() => setScreen('menu')} />}
+      {screen === 'rules' && (
+        <RulesScreen
+          onBack={() => setScreen('menu')}
+          buttonColor={screenProps.buttonColor}
+        />
+      )}
 
       {screen === 'rating' && (
         <RatingScreen
-          gridSize={gridSize}
           onBack={() => setScreen('menu')}
+          buttonColor={screenProps.buttonColor}
         />
       )}
     </div>

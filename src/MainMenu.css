@@ -1,0 +1,126 @@
+/* .title {
+    color: #13ee43;
+    background: linear-gradient(45deg, oklab(97% 0 0.007), oklab(90.9% 0.003 0.02), oklab(85% 0.005 0.034), oklab(77.3% 0.002 0.039));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: Noto Sans Symbols, sans-serif;
+    margin-bottom: 40px;
+    font-size: 42px;
+    filter: drop-shadow(0 4px 0.75px black);
+    font-weight: 600;
+} */
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #111111 0%, #383838 100%);
+}
+
+.game-title {
+    color: #ffffff;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.color-picker-button {
+    margin: 15px 0;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.color-picker-popover {
+    width: 260px;
+    padding: 15px;
+    background: #2d2d2d;
+}
+
+.color-picker-title {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.color-presets {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.color-option {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.custom-color-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+}
+
+.custom-color-input input[type="color"] {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.menu-button {
+    width: 200px;
+    margin-bottom: 15px;
+    color: white !important;
+    transition: all 0.2s !important;
+}
+
+.menu-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.game-sizes-container {
+    margin-bottom: 12px;
+}
+
+.section-title {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.game-sizes {
+    display: flex;
+    gap: 10px;
+}
+
+.size-button {
+    width: 96px;
+    height: 46px;
+    color: white !important;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.action-button {
+    width: 150px;
+    height: 46px;
+    color: white !important;
+}

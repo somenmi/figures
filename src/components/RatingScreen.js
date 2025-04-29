@@ -1,80 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Title } from '@vkontakte/vkui';
+import { Button, Title, Div } from '@vkontakte/vkui';
 import { getRatings } from '../utils/storage';
+import '../RatingScreen.css'; // Создадим этот файл
 
-const RatingScreen = ({ gridSize, onBack }) => {
-  const [ratings, setRatings] = useState([]);
+const RatingScreen = ({ onBack, buttonColor }) => {
+  const [ratings, setRatings] = useState({});
+  const [selectedSize, setSelectedSize] = useState(4);
+  const sizes = [4, 6, 8];
 
   useEffect(() => {
-    const loadRatings = async () => {
-      try {
-        const data = await getRatings(gridSize);
-        setRatings(data);
-      } catch (error) {
-        console.error('Ошибка загрузки рейтинга:', error);
+    const loadAllRatings = async () => {
+      const ratingsData = {};
+      for (const size of sizes) {
+        ratingsData[size] = (await getRatings(size)) || [];
       }
+      setRatings(ratingsData);
     };
-
-    loadRatings();
-  }, [gridSize]);
+    loadAllRatings();
+  }, []);
 
   return (
-    <div style={{ 
-      padding: '20px',
-      textAlign: 'center'
-    }}>
-      <Title level="1" style={{ marginBottom: '20px' }}>
-        Рейтинг {gridSize}x{gridSize}
+    <Div className="rating-container">
+      <Title level="1" className="rating-title">
+        尸仨认丁凵廾厂
       </Title>
       
-      {ratings.length > 0 ? (
-        <div style={{ 
-          maxWidth: '500px',
-          margin: '0 auto 20px',
-          textAlign: 'left'
-        }}>
-          {ratings.map((player, index) => (
-            <div key={player.id} style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '10px',
-              padding: '10px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '8px'
-            }}>
-              <span style={{ 
-                width: '30px',
-                fontWeight: 'bold'
-              }}>
-                {index + 1}.
+      <div className="size-selector">
+        {sizes.map(size => (
+          <Button
+            key={size}
+            className={`size-button2 ${selectedSize === size ? 'active' : ''}`}
+            style={{ backgroundColor: buttonColor }}
+            onClick={() => setSelectedSize(size)}
+          >
+            {size}x{size}
+          </Button>
+        ))}
+      </div>
+      
+      <div className="ratings-list">
+        {ratings[selectedSize]?.length > 0 ? (
+          ratings[selectedSize].map((player, index) => (
+            <div key={index} className="rating-item">
+              <span className="rank">{index + 1}.</span>
+              <span className="player">Игрок #{index + 1}</span>
+              <span className="score" style={{ color: buttonColor }}>
+                {player.score}
               </span>
-              <img 
-                src={player.photo} 
-                alt="" 
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  margin: '0 15px'
-                }} 
-              />
-              <span style={{ flexGrow: 1 }}>{player.name}</span>
-              <span style={{ fontWeight: 'bold' }}>{player.score}</span>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p>Рейтинг пока пуст</p>
-      )}
+          ))
+        ) : (
+          <div className="empty-rating">
+            Пока нет результатов для {selectedSize}x{selectedSize}
+          </div>
+        )}
+      </div>
 
       <Button 
-        size="l"
+        className="back-button1"
+        style={{ backgroundColor: buttonColor }}
         onClick={onBack}
-        style={{ marginTop: '20px' }}
       >
         Назад в меню
       </Button>
-    </div>
+    </Div>
   );
 };
 
