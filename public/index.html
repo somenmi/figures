@@ -5,24 +5,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#242424">
+  <link rel="manifest" href="./manifest.json" />
   <title>Фигуры</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-</head>
-
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
   <script>
-    // Эмулятор для разработки
-    if (window.location.hostname === 'localhost' && !window.vkBridge) {
+    if (!window.vkBridge) {
       window.vkBridge = {
-        send: (method) => console.log(method),
+        send: (m) => console.log('VK Bridge mock:', m),
         subscribe: () => { }
       };
     }
   </script>
+</head>
+
+<body>
+  <noscript>Требуется JavaScript для работы приложения</noscript>
+  <div id="root"></div>
 </body>
 
 </html>
