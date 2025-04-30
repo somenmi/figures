@@ -24,7 +24,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       <Title level="1" className="rating-title">
         尸仨认丁凵廾厂
       </Title>
-      
+
       <div className="size-selector">
         {sizes.map(size => (
           <Button
@@ -37,13 +37,24 @@ const RatingScreen = ({ onBack, buttonColor }) => {
           </Button>
         ))}
       </div>
-      
+
       <div className="ratings-list">
         {ratings[selectedSize]?.length > 0 ? (
           ratings[selectedSize].map((player, index) => (
             <div key={index} className="rating-item">
-              <span className="rank">{index + 1}.</span>
-              <span className="player">Игрок #{index + 1}</span>
+              <div className="user-info">
+                <div className="avatar-container">
+                  <img
+                    src={player.avatar || 'https://vk.com/images/camera_100.png'}
+                    alt="Аватар"
+                    className="avatar"
+                  />
+                  <span className="rank">{index + 1}.</span>
+                </div>
+                <span className="player-name">
+                  {player.first_name || `Игрок ${index + 1}`}
+                </span>
+              </div>
               <span className="score" style={{ color: buttonColor }}>
                 {player.score}
               </span>
@@ -56,7 +67,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
         )}
       </div>
 
-      <Button 
+      <Button
         className="back-button1"
         style={{ backgroundColor: buttonColor }}
         onClick={onBack}
