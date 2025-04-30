@@ -3,7 +3,9 @@ import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
 import RatingScreen from './components/RatingScreen';
-import { loadGame } from './utils/storage'; // Добавьте этот импорт
+import AudioController from './components/AudioController';
+import { loadGame } from './utils/storage';
+
 
 function App() {
   const [screen, setScreen] = useState('menu');
@@ -33,10 +35,14 @@ function App() {
 
   // Функция для продолжения игры
   const handleContinue = useCallback(async () => {
-    const sizes = [4, 6, 8];
+    console.log('Trying to continue game...');
+    const sizes = [3, 4, 5];
     for (const size of sizes) {
+      console.log(`Checking size ${size}...`);
       const game = await loadGame(size);
+      console.log('Loaded game:', game);
       if (game) {
+        console.log('Found saved game for size:', size);
         setGridSize(size);
         setSavedGame(game);
         setScreen('game');
@@ -44,6 +50,8 @@ function App() {
       }
     }
   }, []);
+
+
 
   return (
     <div className="app-container">
@@ -54,10 +62,11 @@ function App() {
             setSavedGame(null);
             setScreen('game');
           }}
+          onContinueGame={handleContinue}
           currentColor={currentColor}
           onColorChange={handleColorChange}
-          onShowRules={() => setScreen('rules')}
-          onShowRating={() => setScreen('rating')}
+          onShowRules={() => handleShowRules(currentColor)}
+          onShowRating={() => handleShowRating(currentColor)}
         />
       )}
 
@@ -82,6 +91,8 @@ function App() {
           buttonColor={currentColor}
         />
       )}
+
+      <AudioController />
     </div>
   );
 }

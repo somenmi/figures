@@ -25,19 +25,27 @@ const MainMenu = ({
     { value: '#7751b8', label: 'Фиолетовый' },
   ];
 
+  useEffect(() => {
+    setButtonColor(currentColor);
+  }, [currentColor]);
+
   const handleColorChange = (color) => {
     setButtonColor(color);
-    onColorChange(color); // Передаем изменение в App.js
-    localStorage.setItem('buttonColor', color); // Дублируем в localStorage
+    onColorChange(color);
+    localStorage.setItem('buttonColor', color);
   };
 
+  // Улучшенная проверка сохранённой игры
   useEffect(() => {
+    let isMounted = true;
+    
     const checkSavedGames = async () => {
       try {
         for (const size of sizes) {
           const game = await loadGame(size);
-          if (game) {
+          if (game && isMounted) {
             setHasSavedGame(true);
+            console.log('Saved game found for size:', size, game);
             break;
           }
         }
@@ -47,6 +55,10 @@ const MainMenu = ({
     };
 
     checkSavedGames();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [sizes]);
 
   return (
@@ -55,15 +67,21 @@ const MainMenu = ({
         中凵⺁丫尸Ђ丨
       </Title>
 
+      {/* Кнопка "Продолжить" - сделаем её более заметной */}
       {hasSavedGame && (
-        <Button
-          size="l"
-          className="menu-button"
-          style={{ backgroundColor: buttonColor }}
-          onClick={onContinueGame}
-        >
-          Продолжить
-        </Button>
+        <div style={{ marginBottom: '20px', width: '100%', maxWidth: '200px' }}>
+          <Button
+            size="l"
+            className="menu-button"
+            style={{ 
+              backgroundColor: buttonColor,
+              width: '100%'
+            }}
+            onClick={onContinueGame}
+          >
+            Продолжить
+          </Button>
+        </div>
       )}
 
       <div className="game-sizes-container">
@@ -103,7 +121,6 @@ const MainMenu = ({
         </Button>
       </div>
 
-      {/* Кнопка выбора цвета */}
       <Popover
         action="click"
         className="custom-popover-root"
@@ -119,7 +136,7 @@ const MainMenu = ({
                   key={color.value}
                   className="color-option"
                   style={{ backgroundColor: color.value }}
-                  onClick={() => handleColorChange(color.value)} // Здесь используем наш обработчик
+                  onClick={() => handleColorChange(color.value)}
                   title={color.label}
                 />
               ))}
@@ -129,7 +146,7 @@ const MainMenu = ({
               <input
                 type="color"
                 value={buttonColor}
-                onChange={(e) => handleColorChange(e.target.value)} // И здесь тоже
+                onChange={(e) => handleColorChange(e.target.value)}
               />
             </div>
           </Div>
@@ -144,7 +161,6 @@ const MainMenu = ({
           Цвет кнопок
         </Button>
       </Popover>
-
     </div>
   );
 };
