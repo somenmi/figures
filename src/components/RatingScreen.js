@@ -24,7 +24,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       <Title level="1" className="rating-title">
         Таблица рекордов
       </Title>
-      
+
       <div className="size-selector">
         {sizes.map(size => (
           <Button
@@ -37,13 +37,23 @@ const RatingScreen = ({ onBack, buttonColor }) => {
           </Button>
         ))}
       </div>
-      
+
       <div className="ratings-list">
         {ratings[selectedSize]?.length > 0 ? (
           ratings[selectedSize].map((player, index) => (
             <div key={index} className="rating-item">
               <span className="rank">{index + 1}.</span>
-              <span className="player">Игрок #{index + 1}</span>
+              <img
+                src={player.photo}
+                alt=""
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  margin: '0 15px'
+                }}
+              />
+              <span className="player">{player.name}</span>
               <span className="score" style={{ color: buttonColor }}>
                 {player.score}
               </span>
@@ -56,7 +66,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
         )}
       </div>
 
-      <Button 
+      <Button
         className="back-button"
         style={{ backgroundColor: buttonColor }}
         onClick={onBack}
