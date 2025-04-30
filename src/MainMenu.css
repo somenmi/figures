@@ -124,3 +124,18 @@
     height: 46px;
     color: white !important;
 }
+
+.main-menu-size-button {
+    width: 96px;
+    height: 46px;
+    color: white !important;
+    background-color: var(--button-color) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    transition: all 0.2s !important;
+}
+
+.main-menu-size-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}

@@ -69,7 +69,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
               key={size}
               size="m"
               before={<Icon24Game />}
-              className="size-button"
+              className="main-menu-size-button"
               style={{ backgroundColor: buttonColor }}
               onClick={() => onStartGame(size)}
             >

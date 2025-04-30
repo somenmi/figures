@@ -25,18 +25,23 @@ body {
     margin-bottom: 20px;
 }
 
-.size-button2 {
-    flex: 1;
-    max-width: 100px;
-    color: var(--button-color) !important;
-    border: 2px solid var(--button-color) !important;
+.size-button {
+    width: 96px;
+    height: 46px;
+    color: white !important;
+    background-color: var(--button-color) !important;
+    border: none !important;
     border-radius: 8px !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.2s !important;
 }
 
-.size-button2.active {
-    background-color: var(--button-color) !important;
-    color: #fff !important;
+.size-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.size-button.active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--button-color) !important;
 }
 
 .ratings-list {
@@ -86,4 +91,10 @@ body {
     border: none !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
     margin-top: auto !important;
+    transition: all 0.2s !important;
+}
+
+.back-button1:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
 }
