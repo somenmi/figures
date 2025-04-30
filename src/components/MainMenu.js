@@ -5,7 +5,7 @@ import { loadGame } from '../utils/storage';
 import '../MainMenu.css';
 
 const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) => {
-  const sizes = useMemo(() => [4, 6, 8], []);
+  const sizes = useMemo(() => [3, 4, 5], []);
   const [hasSavedGame, setHasSavedGame] = useState(false);
   const [buttonColor, setButtonColor] = useState(
     localStorage.getItem('buttonColor') || '#5181B8'

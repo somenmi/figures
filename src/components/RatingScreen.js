@@ -6,7 +6,7 @@ import '../RatingScreen.css'; // Создадим этот файл
 const RatingScreen = ({ onBack, buttonColor }) => {
   const [ratings, setRatings] = useState({});
   const [selectedSize, setSelectedSize] = useState(4);
-  const sizes = [4, 6, 8];
+  const sizes = [3, 4, 5];
 
   useEffect(() => {
     const loadAllRatings = async () => {
