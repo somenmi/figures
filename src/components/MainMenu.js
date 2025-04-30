@@ -13,11 +13,11 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   const colorPresets = [
-    { value: '#5181B8', label: 'VK Синий' },
-    { value: '#FF5C77', label: 'Розовый' },
-    { value: '#4BB34B', label: 'Зеленый' },
-    { value: '#FFA000', label: 'Оранжевый' },
-    { value: '#8A2BE2', label: 'Фиолетовый' },
+    { value: '#5181B8', label: 'Синий' },
+    { value: '#b85173', label: 'Малиновый' },
+    { value: '#58b851', label: 'Богомол' },
+    { value: '#b88d51', label: 'Золото' },
+    { value: '#7751b8', label: 'Фиолетовый' },
   ];
 
   const handleColorChange = (color) => {

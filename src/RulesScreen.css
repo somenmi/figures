@@ -69,3 +69,8 @@
 .custom-back-button:active {
     transform: translateY(0);
 }
+
+.cbutton {
+    color: #fff !important;
+    background-color: var(--button-color) !important;
+}

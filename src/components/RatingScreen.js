@@ -22,7 +22,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
   return (
     <Div className="rating-container">
       <Title level="1" className="rating-title">
-        Таблица рекордов
+      尸仨认丁凵廾厂
       </Title>
 
       <div className="size-selector">
@@ -69,7 +69,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       </div>
 
       <Button
-        className="back-button"
+        className="back-button1"
         style={{ backgroundColor: buttonColor }}
         onClick={onBack}
       >

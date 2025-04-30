@@ -16,13 +16,9 @@ const RulesScreen = ({ onBack, buttonColor }) => {
       </Div>
       
       <Button
-        mode="primary"
-        appearance="overlay"
+        className="cbutton"
         style={{
-          backgroundColor: buttonColor,
-          '--vkui--color_background_primary': buttonColor,
-          '--vkui--color_background_primary_hover': `${buttonColor}CC`,
-          '--vkui--color_background_primary_active': `${buttonColor}99`
+          backgroundColor: buttonColor
         }}
         onClick={onBack}
       >
