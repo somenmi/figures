@@ -33,16 +33,23 @@
 .rule-1 {
     color: #baff4a;
     background: rgba(186, 255, 74, 0.1);
+    font-family: cursive;
 }
 
 .rule-2 {
     color: #ffa74a;
     background: rgba(255, 167, 74, 0.1);
+    font-family: cursive;
 }
 
 .rule-3 {
     color: #ff4a62;
     background: rgba(255, 74, 98, 0.1);
+    font-family: cursive;
+}
+
+.co {
+    color: #ffffff;
     font-weight: 1000;
 }
 

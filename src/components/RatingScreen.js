@@ -1,18 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Title, Div } from '@vkontakte/vkui';
 import { getRatings } from '../utils/storage';
-import '../RatingScreen.css'; // Создадим этот файл
+import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
   const [ratings, setRatings] = useState({});
   const [selectedSize, setSelectedSize] = useState(4);
   const sizes = [3, 4, 5];
 
+  // Функция для обработки рейтингов - оставляет только лучший результат для каждого пользователя
+  const processRatings = (rawRatings) => {
+    if (!rawRatings) return [];
+    
+    // Создаем объект для хранения лучших результатов по ID пользователя
+    const bestResults = {};
+    
+    rawRatings.forEach(player => {
+      const userId = player.id || player.photo; // Используем photo как ID, если id нет
+      if (!bestResults[userId] || player.score > bestResults[userId].score) {
+        bestResults[userId] = { ...player };
+      }
+    });
+    
+    // Преобразуем обратно в массив и сортируем по убыванию
+    return Object.values(bestResults)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 100); // Ограничиваем количество результатов, если нужно
+  };
+
   useEffect(() => {
     const loadAllRatings = async () => {
       const ratingsData = {};
       for (const size of sizes) {
-        ratingsData[size] = (await getRatings(size)) || [];
+        const rawRatings = (await getRatings(size)) || [];
+        ratingsData[size] = processRatings(rawRatings);
       }
       setRatings(ratingsData);
     };
@@ -41,7 +62,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       <div className="ratings-list">
         {ratings[selectedSize]?.length > 0 ? (
           ratings[selectedSize].map((player, index) => (
-            <div key={index} className="rating-item">
+            <div key={`${player.id || player.photo}-${index}`} className="rating-item">
               <span className="rank">{index + 1}.</span>
               <img
                 src={player.photo}

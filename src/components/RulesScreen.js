@@ -12,7 +12,7 @@ const RulesScreen = ({ onBack, buttonColor }) => {
       <Div className="rules-list">
         <p className="rule rule-1">Используйте стрелки или свайпы для перемещения фигур</p>
         <p className="rule rule-2">Одинаковые фигуры объединяются в следующую по уровню</p>
-        <p className="rule rule-3" style={{file}}>Цель : Топ 1 в Рейтинге</p>
+        <p className="rule rule-3">Цель : <span className="co">ТОП №1</span> в <span className="co">Рейтинге</span></p>
       </Div>
       
       <Button
