@@ -53,32 +53,26 @@
     font-weight: 1000;
 }
 
-.custom-back-button {
-    color: #fff;
+.back-button {
+    width: 8%;
+    max-width: 200px;
+    color: white !important;
     border: none;
+    border-radius: 8px;
     padding: 0 24px;
     height: 44px;
-    min-width: 200px;
     font-size: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    cursor: pointer;
     transition: all 0.2s ease;
-    font-family: -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin-top: 20px;
 }
 
-.custom-back-button:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
+.back-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
-.custom-back-button:active {
+.back-button:active {
     transform: translateY(0);
-}
-
-.cbutton {
-    color: #fff !important;
-    background-color: var(--button-color) !important;
 }

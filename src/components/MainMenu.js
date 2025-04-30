@@ -4,12 +4,17 @@ import { Icon24Game, Icon24PaletteOutline } from '@vkontakte/icons';
 import { loadGame } from '../utils/storage';
 import '../MainMenu.css';
 
-const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) => {
+const MainMenu = ({
+  onStartGame,
+  onContinueGame,
+  onShowRules,
+  onShowRating,
+  onColorChange,
+  currentColor
+}) => {
   const sizes = useMemo(() => [3, 4, 5], []);
   const [hasSavedGame, setHasSavedGame] = useState(false);
-  const [buttonColor, setButtonColor] = useState(
-    localStorage.getItem('buttonColor') || '#5181B8'
-  );
+  const [buttonColor, setButtonColor] = useState(currentColor);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   const colorPresets = [
@@ -22,8 +27,8 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
 
   const handleColorChange = (color) => {
     setButtonColor(color);
-    localStorage.setItem('buttonColor', color);
-    setShowColorPicker(false);
+    onColorChange(color); // Передаем изменение в App.js
+    localStorage.setItem('buttonColor', color); // Дублируем в localStorage
   };
 
   useEffect(() => {
@@ -84,7 +89,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
           size="l"
           className="action-button"
           style={{ backgroundColor: buttonColor }}
-          onClick={() => onShowRating(buttonColor)}
+          onClick={onShowRating}
         >
           Рейтинг
         </Button>
@@ -92,7 +97,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
           size="l"
           className="action-button"
           style={{ backgroundColor: buttonColor }}
-          onClick={() => onShowRules(buttonColor)} // Передаем цвет при клике
+          onClick={onShowRules}
         >
           Правила
         </Button>
@@ -103,7 +108,6 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
         action="click"
         shown={showColorPicker}
         onShownChange={setShowColorPicker}
-        style={{ position: 'absolute', left: '-70px' }}
         content={
           <Div className="color-picker-popover">
             <h3 className="color-picker-title">Выберите цвет кнопок</h3>
@@ -113,7 +117,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
                   key={color.value}
                   className="color-option"
                   style={{ backgroundColor: color.value }}
-                  onClick={() => handleColorChange(color.value)}
+                  onClick={() => handleColorChange(color.value)} // Здесь используем наш обработчик
                   title={color.label}
                 />
               ))}
@@ -123,7 +127,7 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
               <input
                 type="color"
                 value={buttonColor}
-                onChange={(e) => handleColorChange(e.target.value)}
+                onChange={(e) => handleColorChange(e.target.value)} // И здесь тоже
               />
             </div>
           </Div>
@@ -134,7 +138,6 @@ const MainMenu = ({ onStartGame, onContinueGame, onShowRules, onShowRating }) =>
           size="m"
           mode="outline"
           className="color-picker-button"
-          style={{ margin: '28px' }}
         >
           Цвет кнопок
         </Button>

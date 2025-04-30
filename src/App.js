@@ -10,11 +10,24 @@ function App() {
   const [screenProps, setScreenProps] = useState({});
   const [gridSize, setGridSize] = useState(4);
   const [savedGame, setSavedGame] = useState(null);
-  const [currentColor, setCurrentColor] = useState('defaultColor');
+  const [currentColor, setCurrentColor] = useState(
+    localStorage.getItem('buttonColor') || '#5181B8'
+  );
+
+  const handleColorChange = (color) => {
+    setCurrentColor(color);
+    localStorage.setItem('buttonColor', color);
+  };
 
   const handleShowRating = (color) => {
-    setCurrentColor(color); // Сохраняем цвет
+    setCurrentColor(color);
     setScreen('rating');
+    setScreenProps({ buttonColor: color });
+  };
+
+  const handleShowRules = (color) => {
+    setCurrentColor(color);
+    setScreen('rules');
     setScreenProps({ buttonColor: color });
   };
 
@@ -41,9 +54,10 @@ function App() {
             setSavedGame(null);
             setScreen('game');
           }}
-          onContinueGame={handleContinue}
+          currentColor={currentColor}
+          onColorChange={handleColorChange}
           onShowRules={() => setScreen('rules')}
-          onShowRating={handleShowRating}
+          onShowRating={() => setScreen('rating')}
         />
       )}
 
@@ -58,14 +72,14 @@ function App() {
       {screen === 'rules' && (
         <RulesScreen
           onBack={() => setScreen('menu')}
-          buttonColor={screenProps.buttonColor}
+          buttonColor={currentColor}
         />
       )}
 
       {screen === 'rating' && (
         <RatingScreen
           onBack={() => setScreen('menu')}
-          buttonColor={screenProps.buttonColor}
+          buttonColor={currentColor}
         />
       )}
     </div>

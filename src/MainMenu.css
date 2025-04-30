@@ -129,7 +129,7 @@
     width: 96px;
     height: 46px;
     color: white !important;
-    background-color: var(--button-color) !important;
+    background-color: var(--button-color);
     border: none !important;
     border-radius: 8px !important;
     transition: all 0.2s !important;
