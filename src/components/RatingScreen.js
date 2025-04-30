@@ -53,7 +53,9 @@ const RatingScreen = ({ onBack, buttonColor }) => {
                   margin: '0 15px'
                 }}
               />
-              <span className="player">{player.name}</span>
+              <span className="player">
+                {player.name.split(' ')[0]}
+              </span>
               <span className="score" style={{ color: buttonColor }}>
                 {player.score}
               </span>
