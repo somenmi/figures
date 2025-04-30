@@ -64,13 +64,14 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
               width: cellSize,
               height: cellSize,
               backgroundColor: cellValue ? SHAPES[cellValue]?.color || '#ccc' : '#bfae97',
-              fontSize: cellSize * 0.5,
+              fontSize: cellSize * 0.7,
               fontWeight: 'bold',
-              borderRadius: '22px',
-              transition: 'all 0.2s ease-out',
+              borderRadius: '18px',
+              transition: 'all 0.2s ease-in-out',
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              color: '#242424'
             }}
           >
             {cellValue !== 0 && SHAPES[cellValue] && (

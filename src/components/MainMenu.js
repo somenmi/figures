@@ -89,7 +89,7 @@ const MainMenu = ({
           size="l"
           className="action-button"
           style={{ backgroundColor: buttonColor }}
-          onClick={onShowRating}
+          onClick={() => onShowRating(buttonColor)}
         >
           Рейтинг
         </Button>
@@ -97,7 +97,7 @@ const MainMenu = ({
           size="l"
           className="action-button"
           style={{ backgroundColor: buttonColor }}
-          onClick={onShowRules}
+          onClick={() => onShowRules(buttonColor)}
         >
           Правила
         </Button>
@@ -106,6 +106,8 @@ const MainMenu = ({
       {/* Кнопка выбора цвета */}
       <Popover
         action="click"
+        className="custom-popover-root"
+        popoverClassName="custom-popover-content"
         shown={showColorPicker}
         onShownChange={setShowColorPicker}
         content={

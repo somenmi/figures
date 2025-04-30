@@ -26,24 +26,55 @@
 .game-title {
     color: #ffffff;
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 4px 0.75px rgba(0, 0, 0, 0.8));
+    font-weight: 600;
 }
 
 .color-picker-button {
-    margin: 15px 0;
+    margin-top: 26px !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
     color: #fff !important;
 }
 
 .color-picker-popover {
-    width: 260px;
+    position: fixed;
+    width: 290px;
     padding: 15px;
-    background: #2d2d2d;
+    border-radius: 20px;
+    background: #484848;
+    margin-left: 74px;
+    margin-top: -570px;
+    transform: translateX(-50%);
+    z-index: 1000;
+    animation: slide-up 0.3s ease-out forwards;
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.custom-popover-root .vkuiPopover__in {
+    background: #363636;
+}
+
+.custom-popover-content {
+    background: #363636;
 }
 
 .color-picker-title {
     color: #fff;
     margin-bottom: 15px;
     font-size: 16px;
+    display: flex;
+    justify-content: center;
 }
 
 .color-presets {
@@ -69,15 +100,18 @@
 .custom-color-input {
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin-left: 82px;
     gap: 10px;
     color: #fff;
+
 }
 
 .custom-color-input input[type="color"] {
     width: 40px;
     height: 40px;
-    border: 2px solid #fff;
-    border-radius: 8px;
+    border: 1px solid #fff;
+    border-radius: 6px;
     cursor: pointer;
 }
 
@@ -138,4 +172,34 @@
 .main-menu-size-button:hover {
     opacity: 0.9;
     transform: translateY(-2px);
+}
+
+.vkuiPopover__in {
+    background: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.vkuiPopover__inWithStyling {
+    border: none !important;
+
+}
+
+/* Анимации */
+.vkuistyles__-anim-fade-in {
+    animation: none !important;
+}
+
+@keyframes custom-fade {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -54,7 +54,7 @@
 }
 
 .back-button {
-    width: 8%;
+    min-width: 180px;
     max-width: 200px;
     color: white !important;
     border: none;

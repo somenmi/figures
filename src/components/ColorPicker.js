@@ -29,7 +29,7 @@ export const ColorPicker = ({ onColorChange }) => {
                 width: 40,
                 height: 40,
                 backgroundColor: color,
-                borderRadius: 8,
+                borderRadius: 30,
                 cursor: 'pointer'
               }}
             />
@@ -38,7 +38,7 @@ export const ColorPicker = ({ onColorChange }) => {
       }
     >
       <Button 
-        size="m" 
+        size="l" 
         mode="outline"
         style={{ margin: '10px 0' }}
       >

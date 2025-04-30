@@ -178,17 +178,17 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
   const styles = useMemo(() => ({
     container: {
       touchAction: 'manipulation',
-      height: '100vh',
+      height: '96vh',
       display: 'flex',
       flexDirection: 'column',
-      padding: '10px',
+      padding: '16px',
       boxSizing: 'border-box'
     },
     header: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: '10px'
+      marginBottom: '26px'
     },
     gameArea: {
       flexGrow: 1,
