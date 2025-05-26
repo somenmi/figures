@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
@@ -51,14 +51,14 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     supabase
       .from('ratings')
       .select('*')
       .then(({ data, error }) => {
         console.log('Supabase test:', { data, error });
       });
-  }, []);
+  }, []);*/
 
   return (
     <div className="app-container">

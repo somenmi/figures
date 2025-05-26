@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Title, Div } from '@vkontakte/vkui';
 import { getRatings } from '../utils/storage';
 import '../RatingScreen.css';
