@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Title, Div } from '@vkontakte/vkui';
-import { getRatings } from '../utils/storage';
+import { getRatings } from '../utils/storage.js';
 import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
