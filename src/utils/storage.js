@@ -1,33 +1,6 @@
 import bridge from '@vkontakte/vk-bridge';
 import supabase from '../utils/supabase';
 
-/* export const saveGame = async (size, gameData) => {
-  try {
-    const user = await bridge.send('VKWebAppGetUserInfo');
-    await bridge.send('VKWebAppStorageSet', {
-      key: `saved_game_${size}_${user.id}`,
-      value: JSON.stringify(gameData)
-    });
-    return true;
-  } catch (e) {
-    console.error('Save game error:', e);
-    return false;
-  }
-};
-
-export const loadGame = async (size) => {
-  try {
-    const user = await bridge.send('VKWebAppGetUserInfo');
-    const data = await bridge.send('VKWebAppStorageGet', {
-      keys: [`saved_game_${size}_${user.id}`]
-    });
-    return data.keys[0]?.value ? JSON.parse(data.keys[0].value) : null;
-  } catch (e) {
-    console.error('Load game error:', e);
-    return null;
-  }
-}; */
-
 export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');

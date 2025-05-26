@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import GameGrid from './GameGrid';
-import { /*saveGame,*/ saveRating } from '../utils/storage';
+import { saveRating } from '../utils/storage';
 import { Button, Title } from '@vkontakte/vkui';
 
-// Функция для объединения фигур
 const mergeShapes = (row, setScore) => {
   const newRow = [...row];
   for (let i = 0; i < newRow.length - 1; i++) {
@@ -16,25 +15,18 @@ const mergeShapes = (row, setScore) => {
   return newRow.filter(cell => cell !== 0);
 };
 
-const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
-  // Получаем сохраненный цвет кнопок из localStorage
+const GameScreen = ({ size, onBackToMenu }) => {
   const buttonColor = localStorage.getItem('buttonColor') || '#5181B8';
 
-  // Инициализация состояния игры
   const [grid, setGrid] = useState(() => {
-    /* if (savedData && savedData.grid && savedData.grid.length) {
-      return savedData.grid;
-    }
-    */
     const newGrid = Array(size).fill().map(() => Array(size).fill(0));
     return addRandomShape(addRandomShape(newGrid));
   });
 
-  const [score, setScore] = useState(/*savedData?.score || */ 0);
+  const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [prevGrid, setPrevGrid] = useState([]);
 
-  // Функции движения (оптимизированные)
   const moveLeft = useCallback((grid, setScore) => {
     if (!grid || !grid.length) return grid;
     
@@ -89,7 +81,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
     return newGrid;
   }, []);
 
-  // Проверка конца игры
   const isGameOver = useCallback((grid) => {
     if (grid.some(row => row.some(cell => cell === 0))) return false;
     for (let i = 0; i < grid.length; i++) {
@@ -101,7 +92,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
     return true;
   }, []);
 
-  // Обработчик движения
   const handleMove = useCallback((moveFunction) => {
     if (gameOver) return;
 
@@ -112,15 +102,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
     });
   }, [gameOver, grid]);
 
-  /* useEffect(() => {
-    const timer = setInterval(async () => {
-      await saveGame(size, { grid, score });
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [grid, score, size]); */
-
-  // Проверка завершения игры
   useEffect(() => {
     if (isGameOver(grid) && !gameOver) {
       setGameOver(true);
@@ -129,11 +110,9 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
         onBackToMenu();
       }, 500);
       saveRating(size, score);
-      /* saveGame(size, null); */
     }
   }, [grid, score, size, gameOver, isGameOver, onBackToMenu]);
 
-  // Обработка клавиш
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (gameOver) return;
@@ -156,7 +135,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [gameOver, handleMove, moveDown, moveLeft, moveRight, moveUp]);
 
-  // Рассчёт размера клетки
   const calculateCellSize = useCallback(() => {
     const viewportWidth = Math.min(window.innerWidth, 500);
     return Math.floor((viewportWidth * 0.9) / size);
@@ -164,7 +142,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
 
   const [cellSize, setCellSize] = useState(calculateCellSize());
 
-  // Адаптация к изменению размера экрана
   useEffect(() => {
     const handleResize = () => {
       setCellSize(calculateCellSize());
@@ -173,7 +150,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [calculateCellSize]);
 
-  // Стили
   const styles = useMemo(() => ({
     container: {
       touchAction: 'manipulation',
@@ -235,7 +211,7 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
         <GameGrid grid={grid} prevGrid={prevGrid} cellSize={cellSize} />
       </div>
 
-      <div style={styles.controls}>
+      {/*<div style={styles.controls}>
         <div></div>
         <Button 
           onClick={() => handleMove(moveUp)} 
@@ -262,7 +238,7 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
         >
           ▶
         </Button>
-      </div>
+      </div> */}
 
       {gameOver && (
         <div style={styles.gameOverScreen}>
@@ -281,7 +257,6 @@ const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
   );
 };
 
-// Вспомогательные функции
 const addRandomShape = (grid) => {
   const emptyCells = [];
   grid.forEach((row, rowIndex) => {

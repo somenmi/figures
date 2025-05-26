@@ -5,7 +5,7 @@ import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
   const [ratings, setRatings] = useState([]);
-  const [selectedSize, setSelectedSize] = useState(4);
+  const [selectedSize, setSelectedSize] = useState(3);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const sizes = [3, 4, 5];
@@ -30,18 +30,17 @@ const RatingScreen = ({ onBack, buttonColor }) => {
 
   if (isLoading) {
     return (
-      <Div className="rating-container">
-        <Title level="1">Рейтинг</Title>
-        <div>Загрузка...</div>
+      <Div className="center-place" style={{ textAlign: 'center', fontSize: '600%', opacity: '65%' }}>
+        <div>⌛</div>
       </Div>
     );
-  } // size="large" style={{ margin: '20px 0' }}
+  }
 
   if (!ratings) return null;
 
   return (
     <Div className="rating-container">
-      <Title level="1">Рейтинг</Title>
+      <Title className='text-logo' level="1" style={{ margin: '30px 0 26px 0', fontSize: '240%', color: buttonColor }}>尸仨认丁凵廾厂</Title>
 
       {error && (
         <div style={{ color: 'red', margin: '10px 0' }}>
@@ -66,30 +65,48 @@ const RatingScreen = ({ onBack, buttonColor }) => {
 
       <div className="ratings-list">
         {Array.isArray(ratings) && ratings.length > 0 ? (
-          ratings.map((player, index) => (
-            <div key={player.user_id || index} className="rating-item">
-              <span className="rank">{index + 1}.</span>
-              <img
-                src={player.photo_url}
-                alt=""
+          ratings.map((player, index) => {
+            const isTopThree = index < 3;
+            const placeClass =
+              index === 0 ? 'first-place' :
+                index === 1 ? 'second-place' :
+                  index === 2 ? 'third-place' : '';
+
+            const bgColors = {
+              'first-place': 'rgb(255, 0, 0, 0.1)',
+              'second-place': 'rgb(255, 128, 0, 0.1)',
+              'third-place': 'rgb(255, 191, 0, 0.1)'
+            };
+
+            return (
+              <div key={player.user_id || index}
+                className={`rating-item ${isTopThree ? 'top-three-item' : ''}`}
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  margin: '0 10px'
-                }}
-              />
-              <span className="player-name">
-                {player.name || 'Игрок'}
-              </span>
-              <span className="score">
-                {player.score}
-              </span>
-            </div>
-          ))
+                  backgroundColor: isTopThree ? bgColors[placeClass] : 'rgba(255, 255, 255, 0.1)'
+                }}>
+                <span className={`rank ${placeClass}`}>{index + 1}</span>
+                <img
+                  src={player.photo_url}
+                  alt=""
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    margin: '0 4.5px'
+                  }}
+                />
+                <span className={`player-name ${placeClass}`}>
+                  {player.name || 'Игрок'}
+                </span>
+                <span className={`score ${placeClass}`}>
+                  {player.score}
+                </span>
+              </div>
+            );
+          })
         ) : (
-          <div style={{ margin: '20px 0' }}>
-            Пока нет рейтингов для {selectedSize}x{selectedSize}
+          <div className='center-place' style={{ margin: '20px 0', color: '#cfcfcf', fontSize: '120%' }}>
+            Для {selectedSize}x{selectedSize} пока никого
           </div>
         )}
       </div>
@@ -99,7 +116,8 @@ const RatingScreen = ({ onBack, buttonColor }) => {
         onClick={onBack}
         style={{
           backgroundColor: buttonColor,
-          marginTop: 20
+          marginTop: 6,
+          marginBottom: 28,
         }}
       >
         Назад

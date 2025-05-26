@@ -1,16 +1,3 @@
-/* .title {
-    color: #13ee43;
-    background: linear-gradient(45deg, oklab(97% 0 0.007), oklab(90.9% 0.003 0.02), oklab(85% 0.005 0.034), oklab(77.3% 0.002 0.039));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-family: Noto Sans Symbols, sans-serif;
-    margin-bottom: 40px;
-    font-size: 42px;
-    filter: drop-shadow(0 4px 0.75px black);
-    font-weight: 600;
-} */
-
 .menu-container {
     display: flex;
     flex-direction: column;
@@ -24,10 +11,7 @@
 }
 
 .game-title {
-    color: #ffffff;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    filter: drop-shadow(0 4px 0.75px rgba(0, 0, 0, 0.8));
-    font-weight: 600;
+    color: #fff;
 }
 
 .color-picker-button {
@@ -118,8 +102,8 @@
 .menu-button {
     width: 200px;
     margin-bottom: 15px;
-    color: white !important;
-    transition: all 0.2s !important;
+    color: white;
+    transition: all 0.2s;
 }
 
 .menu-button:hover {
@@ -133,7 +117,8 @@
 
 .section-title {
     color: #fff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.4) contrast(0.9);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .game-sizes {
@@ -187,7 +172,6 @@
 
 }
 
-/* Анимации */
 .vkuistyles__-anim-fade-in {
     animation: none !important;
 }

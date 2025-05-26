@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Title, Div, Popover } from '@vkontakte/vkui';
 import { Icon24Game, Icon24PaletteOutline } from '@vkontakte/icons';
-/*import { loadGame } from '../utils/storage';*/
 import '../MainMenu.css';
 
 const MainMenu = ({
   onStartGame,
-  onContinueGame,
   onShowRules,
   onShowRating,
   onColorChange,
   currentColor
 }) => {
   const sizes = useMemo(() => [3, 4, 5], []);
-  /* const [hasSavedGame, setHasSavedGame] = useState(false); */
   const [buttonColor, setButtonColor] = useState(currentColor);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -37,56 +34,54 @@ const MainMenu = ({
     localStorage.setItem('buttonColor', color);
   };
 
-  /* useEffect(() => {
-    let isMounted = true;
-    
-    const checkSavedGames = async () => {
-      try {
-        for (const size of sizes) {
-          const game = await loadGame(size);
-          if (game && isMounted) {
-            setHasSavedGame(true);
-            console.log('Saved game found for size:', size, game);
-            break;
-          }
-        }
-      } catch (error) {
-        console.error('Error checking saved games:', error);
-      }
-    };
+  const adjustColor = (hexColor, brightness = 1, contrast = 1) => {
+    // Преобразуем HEX в RGB
+    let r = parseInt(hexColor.slice(1, 3), 16);
+    let g = parseInt(hexColor.slice(3, 5), 16);
+    let b = parseInt(hexColor.slice(5, 7), 16);
 
-    checkSavedGames();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [sizes]); */
+    // Яркость (brightness)
+    r = Math.min(255, Math.max(0, (r - 127.5) * brightness + 127.5));
+    g = Math.min(255, Math.max(0, (g - 127.5) * brightness + 127.5));
+    b = Math.min(255, Math.max(0, (b - 127.5) * brightness + 127.5));
+
+    // Контраст (contrast)
+    r = Math.min(255, Math.max(0, (r - 127.5) * contrast + 127.5));
+    g = Math.min(255, Math.max(0, (g - 127.5) * contrast + 127.5));
+    b = Math.min(255, Math.max(0, (b - 127.5) * contrast + 127.5));
+
+    // Возвращаем HEX
+    return `#${[r, g, b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
+  };
+
+  const titleStyle = {
+    textShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+    filter: 'drop-shadow(0 4px 0.75px rgba(0, 0, 0, 0.8)) brightness(1.5) contrast(0.9)',
+    fontSize: '46px',
+    fontWeight: 700,
+    backgroundImage: `linear-gradient(
+  140deg,
+  ${buttonColor},
+  ${adjustColor(buttonColor, 1.2, 1.2)} 35%,
+  ${adjustColor(buttonColor, 1.6, 1.6)} 110%
+)`,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    display: 'inline-block',
+    lineHeight: 1.2,
+    padding: '10px 0',
+    margin: '0 0 12px',
+    buttonColor: 'filter: brightness(2)',
+  };
 
   return (
     <div className="menu-container">
-      <Title level="1" className="game-title" style={{ marginBottom: '36px', fontSize: '46px' }}>
+      <Title level="1" className="game-title" style={titleStyle}>
         中凵⺁丫尸Ђ丨
       </Title>
-      {/*
-      {hasSavedGame && (
-        <div style={{ marginBottom: '20px', width: '100%', maxWidth: '200px' }}>
-          <Button
-            size="l"
-            className="menu-button"
-            style={{ 
-              backgroundColor: buttonColor,
-              width: '100%'
-            }}
-            onClick={onContinueGame}
-          >
-            Продолжить
-          </Button>
-        </div>
-      )}
-      */}
 
       <div className="game-sizes-container">
-        <Title level="2" className="section-title" style={{ marginBottom: '22px', fontSize: '20px' }}>廾口乃升牙 凵厂尸丹:</Title>
+        <Title level="2" className="section-title" style={{ marginBottom: '22px', fontSize: '20px', color: buttonColor }}>廾口乃升牙 凵厂尸丹:</Title>
         <div className="game-sizes">
           {sizes.map(size => (
             <Button
