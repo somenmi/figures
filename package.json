@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -11,10 +12,10 @@
     "@vkontakte/vkui": "^7.3.0",
     "express": "^5.1.0",
     "lowdb": "^5.0.5",
+    "micro": "^9.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "micro": "^9.4.0",
     "uuid": "^9.0.0",
     "vk-bridge": "^1.0.0",
     "web-vitals": "^2.1.4"

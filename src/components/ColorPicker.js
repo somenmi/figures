@@ -1,7 +1,7 @@
 import { Button, Popover } from '@vkontakte/vkui';
 import { useState } from 'react';
 
-const colors = ['#FF5722', '#4CAF50', '#2196F3', '#9C27B0', '#FF9800', '#795548'];
+const colors = ['#FF5722', '#4CAF50', '#2196F3', '#9C27B0', '#FF9800', '#795548']; 
 
 export const ColorPicker = ({ onColorChange }) => {
   const [showPicker, setShowPicker] = useState(false);
