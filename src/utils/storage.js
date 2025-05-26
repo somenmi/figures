@@ -32,7 +32,7 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    // 1. Сначала получаем текущий рекорд
+    // 1. Проверяем текущий рекорд пользователя
     const { data: existing } = await supabase
       .from('ratings')
       .select('score')
@@ -40,26 +40,46 @@ export const saveRating = async (gridSize, score) => {
       .eq('grid_size', gridSize)
       .single();
 
-    // 2. Обновляем только если новый рекорд выше
-    if (!existing || score > existing.score) {
-      const { error } = await supabase
-        .from('ratings')
-        .upsert({
-          user_id: user.id,
-          name: `${user.first_name} ${user.last_name}`,
-          photo_url: user.photo_100,
-          score,
-          grid_size: gridSize,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,grid_size' // Указываем составной ключ
-        });
-
-      if (error) throw error;
-      console.log('Рейтинг обновлён');
-    } else {
+    // 2. Если рекорд не улучшен - выходим
+    if (existing && existing.score >= score) {
       console.log('Текущий рекорд выше, не обновляем');
+      return;
     }
+
+    // 3. Сохраняем/обновляем результат
+    const { error: upsertError } = await supabase
+      .from('ratings')
+      .upsert({
+        user_id: user.id,
+        name: `${user.first_name}`,
+        photo_url: user.photo_100,
+        score,
+        grid_size: gridSize,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id,grid_size'
+      });
+
+    if (upsertError) throw upsertError;
+
+    // 4. Удаляем результаты ниже ТОП-10
+    const { data: allRatings } = await supabase
+      .from('ratings')
+      .select('id, score')
+      .eq('grid_size', gridSize)
+      .order('score', { ascending: false });
+
+    if (allRatings && allRatings.length > 10) {
+      const idsToDelete = allRatings.slice(10).map(item => item.id);
+
+      const { error: deleteError } = await supabase
+        .from('ratings')
+        .delete()
+        .in('id', idsToDelete);
+
+      if (deleteError) console.error('Ошибка очистки:', deleteError);
+    }
+
   } catch (e) {
     console.error('Ошибка сохранения:', e);
   }
@@ -87,7 +107,6 @@ export const getRatings = async (gridSize) => {
     return [];
   }
 };
-
 export const getTopRatings = async (gridSize) => {
   try {
     const { data, error } = await supabase
@@ -95,7 +114,7 @@ export const getTopRatings = async (gridSize) => {
       .select('*')
       .eq('grid_size', gridSize)
       .order('score', { ascending: false })
-      .limit(100);
+      .limit(10);
 
     if (error) throw error;
     return data || [];
