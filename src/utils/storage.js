@@ -1,73 +1,37 @@
 import bridge from '@vkontakte/vk-bridge';
 
-export const saveGame = async (gridSize, data) => {
-  try {
-    const user = await bridge.send('VKWebAppGetUserInfo');
-    await bridge.send('VKWebAppStorageSet', {
-      key: `game_${gridSize}_${user.id}`,
-      value: JSON.stringify(data)
-    });
-  } catch (e) {
-    console.error('Save error:', e);
-  }
-};
+// Ключ для общего рейтинга (один для всех)
+const RATING_KEY = 'global_ratings';
+const SAVE_GAME_KEY = 'saved_game';
 
-export const loadGame = async (gridSize) => {
-  try {
-    const user = await bridge.send('VKWebAppGetUserInfo');
-    const data = await bridge.send('VKWebAppStorageGet', {
-      keys: [`game_${gridSize}_${user.id}`]
-    });
-    return data.keys[0]?.value ? JSON.parse(data.keys[0].value) : null;
-  } catch (e) {
-    console.error('Load error:', e);
-    return null;
-  }
-};
-
+// Функции для рейтинга (которые мы уже добавили)
 export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
-
-    // Пытаемся сохранить через API
-    try {
-      const response = await fetch('/api/ratings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          name: `${user.first_name} ${user.last_name}`,
-          photo: user.photo_100,
-          score,
-          gridSize,
-        }),
-      });
-
-      if (!response.ok) throw new Error('API failed');
-      return;
-    } catch (apiError) {
-      console.error('API error:', apiError);
-    }
-
-    // Fallback на VK хранилище
-    const ratings = await getRatings(gridSize);
-    const newEntry = {
+    const userEntry = {
       id: user.id,
       name: `${user.first_name} ${user.last_name}`,
       photo: user.photo_100,
-      score
+      score,
+      gridSize,
+      timestamp: Date.now()
     };
 
-    const updated = [...ratings.filter(r => r.id !== user.id), newEntry]
+    await bridge.send('VKWebAppStorageSet', {
+      key: `user_${user.id}_rating`,
+      value: JSON.stringify(userEntry)
+    });
+
+    const currentRatings = await getRatings(gridSize);
+    const updated = [...currentRatings.filter(r => r.id !== user.id), userEntry]
       .sort((a, b) => b.score - a.score)
       .slice(0, 100);
 
     await bridge.send('VKWebAppStorageSet', {
-      key: `ratings_${gridSize}`,
+      key: `${RATING_KEY}_${gridSize}`,
       value: JSON.stringify(updated)
     });
+
   } catch (e) {
     console.error('Save rating error:', e);
   }
@@ -75,20 +39,8 @@ export const saveRating = async (gridSize, score) => {
 
 export const getRatings = async (gridSize) => {
   try {
-    // Пытаемся получить с API
-    try {
-      const response = await fetch(`/api/ratings?size=${gridSize}`);
-      if (response.ok) {
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
-      }
-    } catch (apiError) {
-      console.error('API error:', apiError);
-    }
-
-    // Fallback на VK хранилище
     const data = await bridge.send('VKWebAppStorageGet', {
-      keys: [`ratings_${gridSize}`]
+      keys: [`${RATING_KEY}_${gridSize}`]
     });
 
     const raw = data.keys[0]?.value;
@@ -96,5 +48,37 @@ export const getRatings = async (gridSize) => {
   } catch (e) {
     console.error('Get ratings error:', e);
     return [];
+  }
+};
+
+export const getTopRatings = async (gridSize) => {
+  return await getRatings(gridSize);
+};
+
+// Добавляем обратно функции для сохранения игры
+export const saveGame = async (size, gameData) => {
+  try {
+    const user = await bridge.send('VKWebAppGetUserInfo');
+    await bridge.send('VKWebAppStorageSet', {
+      key: `${SAVE_GAME_KEY}_${size}_${user.id}`,
+      value: JSON.stringify(gameData)
+    });
+    return true;
+  } catch (e) {
+    console.error('Save game error:', e);
+    return false;
+  }
+};
+
+export const loadGame = async (size) => {
+  try {
+    const user = await bridge.send('VKWebAppGetUserInfo');
+    const data = await bridge.send('VKWebAppStorageGet', {
+      keys: [`${SAVE_GAME_KEY}_${size}_${user.id}`]
+    });
+    return data.keys[0]?.value ? JSON.parse(data.keys[0].value) : null;
+  } catch (e) {
+    console.error('Load game error:', e);
+    return null;
   }
 };

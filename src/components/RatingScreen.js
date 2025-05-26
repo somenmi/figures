@@ -1,37 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Title, Div, Spinner } from '@vkontakte/vkui';
-import { getRatings } from '../utils/storage.js';
+import { getTopRatings } from '../utils/storage';
 import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
-  const [ratings, setRatings] = useState({});
+  const [ratings, setRatings] = useState([]);
   const [selectedSize, setSelectedSize] = useState(4);
   const [isLoading, setIsLoading] = useState(true);
   const sizes = [3, 4, 5];
 
-  const processRatings = (rawRatings) => {
-    if (!rawRatings || !Array.isArray(rawRatings)) return [];
-
-    return rawRatings
-      .filter(player => player && player.score) // Фильтруем некорректные записи
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 100);
-  };
-
   useEffect(() => {
     let isMounted = true;
 
-    const loadAllRatings = async () => {
+    const loadRatings = async () => {
       try {
-        const ratingsData = {};
-        for (const size of sizes) {
-          const rawRatings = (await getRatings(size)) || [];
-          if (isMounted) {
-            ratingsData[size] = processRatings(rawRatings);
-          }
-        }
+        const data = await getTopRatings(selectedSize);
         if (isMounted) {
-          setRatings(ratingsData);
+          setRatings(data);
         }
       } catch (error) {
         console.error('Error loading ratings:', error);
@@ -42,12 +27,12 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       }
     };
 
-    loadAllRatings();
+    loadRatings();
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [selectedSize]);
 
   if (isLoading) {
     return (
