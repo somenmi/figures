@@ -32,30 +32,42 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    const { error } = await supabase
+    // 1. Сначала получаем текущий рекорд
+    const { data: existing } = await supabase
       .from('ratings')
-      .upsert({
-        id: crypto.randomUUID(), // Добавляем генерацию ID
-        user_id: user.id,
-        name: `${user.first_name} ${user.last_name}`,
-        photo_url: user.photo_100,
-        score,
-        grid_size: gridSize,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id,grid_size'
-      });
+      .select('score')
+      .eq('user_id', user.id)
+      .eq('grid_size', gridSize)
+      .single();
 
-    if (error) throw error;
-    console.log('Рейтинг успешно сохранён');
+    // 2. Обновляем только если новый рекорд выше
+    if (!existing || score > existing.score) {
+      const { error } = await supabase
+        .from('ratings')
+        .upsert({
+          user_id: user.id,
+          name: `${user.first_name} ${user.last_name}`,
+          photo_url: user.photo_100,
+          score,
+          grid_size: gridSize,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,grid_size' // Указываем составной ключ
+        });
+
+      if (error) throw error;
+      console.log('Рейтинг обновлён');
+    } else {
+      console.log('Текущий рекорд выше, не обновляем');
+    }
   } catch (e) {
-    console.error('Полная ошибка сохранения:', e);
+    console.error('Ошибка сохранения:', e);
   }
 };
 
 export const getRatings = async (gridSize) => {
   try {
-    console.log('Trying to fetch from Supabase...');
+    console.log('Пытаюсь извлечь из Supabase...');
     const { data, error } = await supabase
       .from('ratings')
       .select('*')
@@ -64,14 +76,36 @@ export const getRatings = async (gridSize) => {
       .limit(100);
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase ОШИБКА:', error);
       return [];
     }
 
-    console.log('Received data:', data);
+    console.log('Полученные данные:', data);
     return data;
   } catch (e) {
-    console.error('Global fetch error:', e);
+    console.error('Глобальная ошибка выборки:', e);
     return [];
   }
 };
+
+export const getTopRatings = async (gridSize) => {
+  try {
+    const { data, error } = await supabase
+      .from('ratings')
+      .select('*')
+      .eq('grid_size', gridSize)
+      .order('score', { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.error('Ошибка загрузки рейтинга:', e);
+    return [];
+  }
+};
+
+console.log('Текущие ограничения таблицы:');
+const { data: constraints } = await supabase
+  .rpc('get_constraints', { table_name: 'ratings' });
+console.log(constraints);
