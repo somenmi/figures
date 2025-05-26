@@ -32,9 +32,10 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    const { error } = await supabase // Используем импортированный supabase
+    const { error } = await supabase
       .from('ratings')
       .upsert({
+        id: crypto.randomUUID(), // Добавляем генерацию ID
         user_id: user.id,
         name: `${user.first_name} ${user.last_name}`,
         photo_url: user.photo_100,
@@ -46,8 +47,9 @@ export const saveRating = async (gridSize, score) => {
       });
 
     if (error) throw error;
+    console.log('Рейтинг успешно сохранён');
   } catch (e) {
-    console.error('Save rating error:', e);
+    console.error('Полная ошибка сохранения:', e);
   }
 };
 
