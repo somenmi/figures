@@ -11,16 +11,18 @@
 }
 
 .rules-title {
-    color: #fff !important;
+    color: #fff;
     margin-bottom: 30px !important;
-    font-size: 2rem !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    font-size: 2.6rem !important;
+    text-shadow: 2px 4px 2px rgba(0, 0, 0, 0.3) !important;
+    filter: brightness(1.2) contrast(1.4);
 }
 
 .rules-list {
     max-width: 500px;
     margin-bottom: 40px;
-    line-height: 1.6;
+    line-height: 1.5;
+    width: 360px;
 }
 
 .rule {
@@ -33,43 +35,44 @@
 .rule-1 {
     color: #baff4a;
     background: rgba(186, 255, 74, 0.1);
-    font-family: cursive;
+    font-family: "Gill Sans", sans-serif;
 }
 
 .rule-2 {
     color: #ffa74a;
     background: rgba(255, 167, 74, 0.1);
-    font-family: cursive;
+    font-family: "Gill Sans", sans-serif;
 }
 
 .rule-3 {
     color: #ff4a62;
-    background: rgba(255, 74, 98, 0.1);
-    font-family: cursive;
+    background: rgba(255, 23, 54, 0.1);
+    font-family: "Gill Sans", sans-serif;
 }
 
 .rule-4 {
-    color: #adc7ff;
-    background: rgba(74, 131, 255, 0.3);
-    font-family: cursive;
+    color: #98d1ff;
+    background: rgba(0, 136, 255, 0.1);
+    font-family: "Gill Sans", sans-serif;
 }
 
 .co {
     color: #ffffff;
-    font-weight: 1000;
+    font-weight: 800;
+    letter-spacing: 0.8px;
 }
 
 .back-button {
     min-width: 180px;
     max-width: 200px;
-    color: white !important;
+    color: white;
     border: none;
     border-radius: 8px;
     padding: 0 24px;
     height: 44px;
     font-size: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
+    transition: all 1s ease;
     margin-top: 20px;
 }
 
