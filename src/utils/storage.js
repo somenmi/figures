@@ -1,5 +1,5 @@
-import { supabase } from './supabase';
 import bridge from '@vkontakte/vk-bridge';
+import supabase from '../utils/supabase';
 
 export const saveGame = async (size, gameData) => {
   try {
@@ -32,19 +32,13 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    console.log('Отправляемые данные:', {
-      user_id: user.id,
-      score,
-      grid_size: gridSize
-    });
-
-    const { data, error } = await supabase
+    const { error } = await supabase // Используем импортированный supabase
       .from('ratings')
       .upsert({
         user_id: user.id,
         name: `${user.first_name} ${user.last_name}`,
         photo_url: user.photo_100,
-        score: score,
+        score,
         grid_size: gridSize,
         updated_at: new Date().toISOString()
       }, {
@@ -52,12 +46,8 @@ export const saveRating = async (gridSize, score) => {
       });
 
     if (error) throw error;
-
-    console.log('Ответ Supabase:', { data, error });
-
-    console.log('Rating saved successfully');
   } catch (e) {
-    console.error('Full save error:', e);
+    console.error('Save rating error:', e);
   }
 };
 
