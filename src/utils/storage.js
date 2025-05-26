@@ -32,24 +32,32 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    const { error } = await supabase
+    console.log('Отправляемые данные:', {
+      user_id: user.id,
+      score,
+      grid_size: gridSize
+    });
+
+    const { data, error } = await supabase
       .from('ratings')
-      .upsert(
-        {
-          user_id: user.id,
-          name: `${user.first_name} ${user.last_name}`,
-          photo_url: user.photo_100,
-          score,
-          grid_size: gridSize,
-          updated_at: new Date().toISOString()
-        },
-        { onConflict: 'user_id,grid_size' }
-      );
+      .upsert({
+        user_id: user.id,
+        name: `${user.first_name} ${user.last_name}`,
+        photo_url: user.photo_100,
+        score: score,
+        grid_size: gridSize,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id,grid_size'
+      });
 
     if (error) throw error;
 
+    console.log('Ответ Supabase:', { data, error });
+
+    console.log('Rating saved successfully');
   } catch (e) {
-    console.error('Save rating error:', e);
+    console.error('Full save error:', e);
   }
 };
 
