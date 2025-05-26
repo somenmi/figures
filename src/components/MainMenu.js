@@ -18,11 +18,13 @@ const MainMenu = ({
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   const colorPresets = [
-    { value: '#5181B8', label: 'Синий' },
-    { value: '#b85173', label: 'Малиновый' },
-    { value: '#58b851', label: 'Богомол' },
-    { value: '#b88d51', label: 'Золото' },
-    { value: '#7751b8', label: 'Фиолетовый' },
+    { value: '#b85151', label: 'Красная долина' },
+    { value: '#b88351', label: 'Светлый желто-коричневый' },
+    { value: '#58b851', label: 'Темный желто-зеленый' },
+    { value: '#5186b8', label: 'Синяя сталь' },
+    { value: '#5451b8', label: 'Королевский синий' },
+    { value: '#7c51b8', label: 'Королевский пурпурный' },
+    { value: '#b55489', label: 'Фанданго' },
   ];
 
   useEffect(() => {
