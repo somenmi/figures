@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Title, Div, Spinner } from '@vkontakte/vkui';
+import { Button, Title, Div } from '@vkontakte/vkui';
 import { getRatings } from '../utils/storage';
 import '../RatingScreen.css';
 
@@ -28,14 +28,16 @@ const RatingScreen = ({ onBack, buttonColor }) => {
     loadData();
   }, [selectedSize]);
 
+  if (!ratings) return null;
+
   if (isLoading) {
     return (
       <Div className="rating-container">
         <Title level="1">Рейтинг</Title>
-        <Spinner size="large" style={{ margin: '20px 0' }} />
+        <div>Загрузка...</div>
       </Div>
     );
-  }
+  } // size="large" style={{ margin: '20px 0' }}
 
   return (
     <Div className="rating-container">
@@ -63,9 +65,9 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       </div>
 
       <div className="ratings-list">
-        {ratings.length > 0 ? (
+        {Array.isArray(ratings) && ratings.length > 0 ? (
           ratings.map((player, index) => (
-            <div key={player.user_id} className="rating-item">
+            <div key={player.user_id || index} className="rating-item">
               <span className="rank">{index + 1}.</span>
               <img
                 src={player.photo_url}

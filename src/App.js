@@ -51,7 +51,14 @@ function App() {
     }
   }, []);
 
-
+  useEffect(() => {
+    supabase
+      .from('ratings')
+      .select('*')
+      .then(({ data, error }) => {
+        console.log('Supabase test:', { data, error });
+      });
+  }, []);
 
   return (
     <div className="app-container">
