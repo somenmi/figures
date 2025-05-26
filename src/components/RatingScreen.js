@@ -1,63 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Title, Div, Spinner } from '@vkontakte/vkui'; // Добавляем Spinner
+import { Button, Title, Div, Spinner } from '@vkontakte/vkui';
 import { getRatings } from '../utils/storage.js';
 import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
   const [ratings, setRatings] = useState({});
   const [selectedSize, setSelectedSize] = useState(4);
-  const [isLoading, setIsLoading] = useState(true); // Добавляем состояние загрузки
+  const [isLoading, setIsLoading] = useState(true);
   const sizes = [3, 4, 5];
 
   const processRatings = (rawRatings) => {
-    if (!rawRatings) return [];
+    if (!rawRatings || !Array.isArray(rawRatings)) return [];
 
-    const bestResults = {};
-
-    rawRatings.forEach(player => {
-      const userId = player.id || player.photo;
-      if (!bestResults[userId] || player.score > bestResults[userId].score) {
-        bestResults[userId] = { ...player };
-      }
-    });
-
-    return Object.values(bestResults)
+    return rawRatings
+      .filter(player => player && player.score) // Фильтруем некорректные записи
       .sort((a, b) => b.score - a.score)
       .slice(0, 100);
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadAllRatings = async () => {
-      setIsLoading(true); // Включаем загрузку
       try {
         const ratingsData = {};
         for (const size of sizes) {
           const rawRatings = (await getRatings(size)) || [];
-          ratingsData[size] = processRatings(rawRatings);
+          if (isMounted) {
+            ratingsData[size] = processRatings(rawRatings);
+          }
         }
-        setRatings(ratingsData);
+        if (isMounted) {
+          setRatings(ratingsData);
+        }
       } catch (error) {
         console.error('Error loading ratings:', error);
       } finally {
-        setIsLoading(false); // Выключаем загрузку
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadAllRatings();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Добавляем отображение загрузки
   if (isLoading) {
     return (
       <Div className="rating-container">
         <Title level="1" className="rating-title">
           Рейтинг
         </Title>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          margin: '20px 0'
-        }}>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
           <Spinner size="regular" />
         </div>
       </Div>
@@ -75,7 +73,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
           <Button
             key={size}
             className={`size-button ${selectedSize === size ? 'active' : ''}`}
-            style={{ '--button-color': buttonColor }}
+            style={{ backgroundColor: buttonColor }}
             onClick={() => setSelectedSize(size)}
           >
             {size}x{size}
@@ -86,23 +84,25 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       <div className="ratings-list">
         {ratings[selectedSize]?.length > 0 ? (
           ratings[selectedSize].map((player, index) => (
-            <div key={`${player.id || player.photo}-${index}`} className="rating-item">
+            <div key={`${player.id || index}`} className="rating-item">
               <span className="rank">{index + 1}.</span>
-              <img
-                src={player.photo}
-                alt=""
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  margin: '0 15px'
-                }}
-              />
+              {player.photo && (
+                <img
+                  src={player.photo}
+                  alt=""
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    margin: '0 15px'
+                  }}
+                />
+              )}
               <span className="player">
-                {player.name.split(' ')[0]}
+                {player.name?.split(' ')[0] || 'Аноним'}
               </span>
               <span className="score" style={{ color: buttonColor }}>
-                {player.score}
+                {player.score || 0}
               </span>
             </div>
           ))
