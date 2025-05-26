@@ -29,27 +29,30 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    const response = await fetch('/api/ratings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: user.id,
-        name: `${user.first_name} ${user.last_name}`,
-        photo: user.photo_100,
-        score,
-        gridSize,
-      }),
-    });
+    // Пытаемся сохранить через API
+    try {
+      const response = await fetch('/api/ratings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          name: `${user.first_name} ${user.last_name}`,
+          photo: user.photo_100,
+          score,
+          gridSize,
+        }),
+      });
 
-    if (!response.ok) throw new Error('Failed to save');
-  } catch (e) {
-    console.error('API error, using fallback:', e);
-    // Локальное сохранение как запасной вариант
+      if (!response.ok) throw new Error('API failed');
+      return;
+    } catch (apiError) {
+      console.error('API error:', apiError);
+    }
+
+    // Fallback на VK хранилище
     const ratings = await getRatings(gridSize);
-    const user = await bridge.send('VKWebAppGetUserInfo');
-
     const newEntry = {
       id: user.id,
       name: `${user.first_name} ${user.last_name}`,
@@ -57,7 +60,7 @@ export const saveRating = async (gridSize, score) => {
       score
     };
 
-    const updated = [...ratings, newEntry]
+    const updated = [...ratings.filter(r => r.id !== user.id), newEntry]
       .sort((a, b) => b.score - a.score)
       .slice(0, 100);
 
@@ -65,21 +68,33 @@ export const saveRating = async (gridSize, score) => {
       key: `ratings_${gridSize}`,
       value: JSON.stringify(updated)
     });
+  } catch (e) {
+    console.error('Save rating error:', e);
   }
 };
 
 export const getRatings = async (gridSize) => {
   try {
-    const response = await fetch(`/api/ratings?size=${gridSize}`);
-    if (response.ok) {
-      return await response.json();
+    // Пытаемся получить с API
+    try {
+      const response = await fetch(`/api/ratings?size=${gridSize}`);
+      if (response.ok) {
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      }
+    } catch (apiError) {
+      console.error('API error:', apiError);
     }
-    throw new Error('API failed');
-  } catch (e) {
-    console.error('Using fallback storage:', e);
+
+    // Fallback на VK хранилище
     const data = await bridge.send('VKWebAppStorageGet', {
       keys: [`ratings_${gridSize}`]
     });
-    return data.keys[0] ? JSON.parse(data.keys[0].value) : [];
+
+    const raw = data.keys[0]?.value;
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error('Get ratings error:', e);
+    return [];
   }
 };
