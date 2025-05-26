@@ -28,8 +28,6 @@ const RatingScreen = ({ onBack, buttonColor }) => {
     loadData();
   }, [selectedSize]);
 
-  if (!ratings) return null;
-
   if (isLoading) {
     return (
       <Div className="rating-container">
@@ -38,6 +36,8 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       </Div>
     );
   } // size="large" style={{ margin: '20px 0' }}
+
+  if (!ratings) return null;
 
   return (
     <Div className="rating-container">
