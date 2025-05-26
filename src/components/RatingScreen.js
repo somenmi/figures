@@ -1,49 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Title, Div } from '@vkontakte/vkui';
+import { Button, Title, Div, Spinner } from '@vkontakte/vkui'; // Добавляем Spinner
 import { getRatings } from '../utils/storage.js';
 import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
   const [ratings, setRatings] = useState({});
   const [selectedSize, setSelectedSize] = useState(4);
+  const [isLoading, setIsLoading] = useState(true); // Добавляем состояние загрузки
   const sizes = [3, 4, 5];
 
-  // Функция для обработки рейтингов - оставляет только лучший результат для каждого пользователя
   const processRatings = (rawRatings) => {
     if (!rawRatings) return [];
-    
-    // Создаем объект для хранения лучших результатов по ID пользователя
+
     const bestResults = {};
-    
+
     rawRatings.forEach(player => {
-      const userId = player.id || player.photo; // Используем photo как ID, если id нет
+      const userId = player.id || player.photo;
       if (!bestResults[userId] || player.score > bestResults[userId].score) {
         bestResults[userId] = { ...player };
       }
     });
-    
-    // Преобразуем обратно в массив и сортируем по убыванию
+
     return Object.values(bestResults)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 100); // Ограничиваем количество результатов, если нужно
+      .slice(0, 100);
   };
 
   useEffect(() => {
     const loadAllRatings = async () => {
-      const ratingsData = {};
-      for (const size of sizes) {
-        const rawRatings = (await getRatings(size)) || [];
-        ratingsData[size] = processRatings(rawRatings);
+      setIsLoading(true); // Включаем загрузку
+      try {
+        const ratingsData = {};
+        for (const size of sizes) {
+          const rawRatings = (await getRatings(size)) || [];
+          ratingsData[size] = processRatings(rawRatings);
+        }
+        setRatings(ratingsData);
+      } catch (error) {
+        console.error('Error loading ratings:', error);
+      } finally {
+        setIsLoading(false); // Выключаем загрузку
       }
-      setRatings(ratingsData);
     };
+
     loadAllRatings();
   }, []);
+
+  // Добавляем отображение загрузки
+  if (isLoading) {
+    return (
+      <Div className="rating-container">
+        <Title level="1" className="rating-title">
+          Рейтинг
+        </Title>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '20px 0'
+        }}>
+          <Spinner size="regular" />
+        </div>
+      </Div>
+    );
+  }
 
   return (
     <Div className="rating-container">
       <Title level="1" className="rating-title">
-      尸仨认丁凵廾厂
+        尸仨认丁凵廾厂
       </Title>
 
       <div className="size-selector">

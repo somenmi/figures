@@ -7,29 +7,24 @@
             "config": {
                 "distDir": "build"
             }
+        },
+        {
+            "src": "api/ratings.js",
+            "use": "@vercel/node"
         }
     ],
     "routes": [
         {
-            "src": "/manifest.json",
-            "dest": "/manifest.json",
-            "headers": {
-                "Content-Type": "application/manifest+json"
-            }
+            "src": "/api/ratings",
+            "dest": "/api/ratings"
         },
         {
-            "src": "/static/(.*)",
-            "dest": "/static/$1",
-            "headers": {
-                "Cache-Control": "public, max-age=31536000, immutable"
-            }
+            "src": "/manifest.json",
+            "dest": "/manifest.json"
         },
         {
             "src": "/(.*)",
-            "dest": "/index.html",
-            "headers": {
-                "Cache-Control": "no-cache"
-            }
+            "dest": "/index.html"
         }
     ]
 }
