@@ -32,16 +32,19 @@ export const saveRating = async (gridSize, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
 
-    // Сохраняем в Supabase
     const { error } = await supabase
       .from('ratings')
-      .upsert({
-        user_id: user.id,
-        name: `${user.first_name} ${user.last_name}`,
-        photo_url: user.photo_100,
-        score,
-        grid_size: gridSize
-      }, { onConflict: 'user_id,grid_size' });
+      .upsert(
+        {
+          user_id: user.id,
+          name: `${user.first_name} ${user.last_name}`,
+          photo_url: user.photo_100,
+          score,
+          grid_size: gridSize,
+          updated_at: new Date().toISOString()
+        },
+        { onConflict: 'user_id,grid_size' }
+      );
 
     if (error) throw error;
 
