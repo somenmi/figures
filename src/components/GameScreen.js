@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import GameGrid from './GameGrid';
-import { saveGame, saveRating } from '../utils/storage';
+import { /*saveGame,*/ saveRating } from '../utils/storage';
 import { Button, Title } from '@vkontakte/vkui';
 
 // Функция для объединения фигур
@@ -16,21 +16,21 @@ const mergeShapes = (row, setScore) => {
   return newRow.filter(cell => cell !== 0);
 };
 
-const GameScreen = ({ size, savedData, onBackToMenu }) => {
+const GameScreen = ({ size, /* savedData,*/ onBackToMenu }) => {
   // Получаем сохраненный цвет кнопок из localStorage
   const buttonColor = localStorage.getItem('buttonColor') || '#5181B8';
 
   // Инициализация состояния игры
   const [grid, setGrid] = useState(() => {
-    if (savedData && savedData.grid && savedData.grid.length) {
+    /* if (savedData && savedData.grid && savedData.grid.length) {
       return savedData.grid;
     }
-
+    */
     const newGrid = Array(size).fill().map(() => Array(size).fill(0));
     return addRandomShape(addRandomShape(newGrid));
   });
 
-  const [score, setScore] = useState(savedData?.score || 0);
+  const [score, setScore] = useState(/*savedData?.score || */ 0);
   const [gameOver, setGameOver] = useState(false);
   const [prevGrid, setPrevGrid] = useState([]);
 
@@ -112,14 +112,13 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
     });
   }, [gameOver, grid]);
 
-  // Автосохранение
-  useEffect(() => {
+  /* useEffect(() => {
     const timer = setInterval(async () => {
       await saveGame(size, { grid, score });
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [grid, score, size]);
+  }, [grid, score, size]); */
 
   // Проверка завершения игры
   useEffect(() => {
@@ -130,7 +129,7 @@ const GameScreen = ({ size, savedData, onBackToMenu }) => {
         onBackToMenu();
       }, 500);
       saveRating(size, score);
-      saveGame(size, null);
+      /* saveGame(size, null); */
     }
   }, [grid, score, size, gameOver, isGameOver, onBackToMenu]);
 
