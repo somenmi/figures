@@ -10,9 +10,9 @@ const RulesScreen = ({ onBack, buttonColor }) => {
       </Title>
 
       <Div className="rules-list">
-        <p className="rule rule-1">Используйте стрелки или свайпы для перемещения фигур</p>
+        <p className="rule rule-1">"<span className="co">WASD</span>" или ⬅️⬆️⬇️➡️ — для ПК, СВАЙПЫ — для смартфонов</p>
         <p className="rule rule-2">Одинаковые фигуры объединяются в следующую по уровню</p>
-        <p className="rule rule-3">Цель : <span className="co">ТОП №1</span> в <span className="co">Рейтинге</span></p>
+        <p className="rule rule-3">Цель : <span className="co">ТОП №1</span> в <span className="co">Рейтинге</span> ("Рейтинг" - в разработке)</p>
       </Div>
 
       <Button
