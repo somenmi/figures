@@ -1,17 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Для разработки локально
-const localEnv = {
-    supabaseUrl: import.meta.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
-    supabaseKey: import.meta.env.VITE_SUPABASE_KEY || process.env.SUPABASE_KEY
-};
+// Для Create React App (не Vite)
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
 
-if (!localEnv.supabaseUrl || !localEnv.supabaseKey) {
-    console.error('Supabase credentials not found!');
-    alert('Ошибка конфигурации. Пожалуйста, сообщите разработчику.');
+if (!supabaseUrl || !supabaseKey) {
+    console.error('Supabase credentials not configured!');
+    alert('Ошибка конфигурации. Проверьте настройки Supabase.');
 }
 
-export const supabase = createClient(
-    localEnv.supabaseUrl,
-    localEnv.supabaseKey
-);
+export const supabase = createClient(supabaseUrl, supabaseKey);

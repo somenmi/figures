@@ -52,6 +52,7 @@ export const saveRating = async (gridSize, score) => {
 
 export const getRatings = async (gridSize) => {
   try {
+    console.log('Trying to fetch from Supabase...');
     const { data, error } = await supabase
       .from('ratings')
       .select('*')
@@ -59,10 +60,15 @@ export const getRatings = async (gridSize) => {
       .order('score', { ascending: false })
       .limit(100);
 
-    if (error) throw error;
-    return data || [];
+    if (error) {
+      console.error('Supabase error:', error);
+      return [];
+    }
+
+    console.log('Received data:', data);
+    return data;
   } catch (e) {
-    console.error('Get ratings error:', e);
+    console.error('Global fetch error:', e);
     return [];
   }
 };
