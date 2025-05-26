@@ -1,7 +1,7 @@
 import bridge from '@vkontakte/vk-bridge';
 import supabase from '../utils/supabase';
 
-export const saveGame = async (size, gameData) => {
+/* export const saveGame = async (size, gameData) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
     await bridge.send('VKWebAppStorageSet', {
@@ -26,7 +26,7 @@ export const loadGame = async (size) => {
     console.error('Load game error:', e);
     return null;
   }
-};
+}; */
 
 export const saveRating = async (gridSize, score) => {
   try {
@@ -121,6 +121,23 @@ export const getTopRatings = async (gridSize) => {
   } catch (e) {
     console.error('Ошибка загрузки рейтинга:', e);
     return [];
+  }
+};
+
+export const clearAllSavedGames = async () => {
+  try {
+    const user = await bridge.send('VKWebAppGetUserInfo');
+    const sizes = [3, 4, 5];
+
+    for (const size of sizes) {
+      await bridge.send('VKWebAppStorageSet', {
+        key: `saved_game_${size}_${user.id}`,
+        value: null
+      });
+    }
+    console.log('Все сохранения удалены');
+  } catch (e) {
+    console.error('Ошибка очистки:', e);
   }
 };
 

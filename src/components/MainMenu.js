@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Title, Div, Popover } from '@vkontakte/vkui';
 import { Icon24Game, Icon24PaletteOutline } from '@vkontakte/icons';
-import { loadGame } from '../utils/storage';
+/*import { loadGame } from '../utils/storage';*/
 import '../MainMenu.css';
 
 const MainMenu = ({
@@ -13,7 +13,7 @@ const MainMenu = ({
   currentColor
 }) => {
   const sizes = useMemo(() => [3, 4, 5], []);
-  const [hasSavedGame, setHasSavedGame] = useState(false);
+  /* const [hasSavedGame, setHasSavedGame] = useState(false); */
   const [buttonColor, setButtonColor] = useState(currentColor);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -37,8 +37,7 @@ const MainMenu = ({
     localStorage.setItem('buttonColor', color);
   };
 
-  // Улучшенная проверка сохранённой игры
-  useEffect(() => {
+  /* useEffect(() => {
     let isMounted = true;
     
     const checkSavedGames = async () => {
@@ -61,15 +60,14 @@ const MainMenu = ({
     return () => {
       isMounted = false;
     };
-  }, [sizes]);
+  }, [sizes]); */
 
   return (
     <div className="menu-container">
       <Title level="1" className="game-title" style={{ marginBottom: '36px', fontSize: '46px' }}>
         中凵⺁丫尸Ђ丨
       </Title>
-
-      {/* Кнопка "Продолжить" - сделаем её более заметной */}
+      {/*
       {hasSavedGame && (
         <div style={{ marginBottom: '20px', width: '100%', maxWidth: '200px' }}>
           <Button
@@ -85,6 +83,7 @@ const MainMenu = ({
           </Button>
         </div>
       )}
+      */}
 
       <div className="game-sizes-container">
         <Title level="2" className="section-title" style={{ marginBottom: '22px', fontSize: '20px' }}>廾口乃升牙 凵厂尸丹:</Title>

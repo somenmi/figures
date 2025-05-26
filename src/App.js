@@ -1,17 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, /*useCallback, useEffect*/ } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
 import RatingScreen from './components/RatingScreen';
 import AudioController from './components/AudioController';
-import { loadGame } from './utils/storage';
+/*import { loadGame } from './utils/storage';*/
 
 
 function App() {
   const [screen, setScreen] = useState('menu');
   const [screenProps, setScreenProps] = useState({});
   const [gridSize, setGridSize] = useState(4);
-  const [savedGame, setSavedGame] = useState(null);
+  // const [savedGame, setSavedGame] = useState(null);
   const [currentColor, setCurrentColor] = useState(
     localStorage.getItem('buttonColor') || '#5181B8'
   );
@@ -33,8 +33,7 @@ function App() {
     setScreenProps({ buttonColor: color });
   };
 
-  // Функция для продолжения игры
-  const handleContinue = useCallback(async () => {
+  /* const handleContinue = useCallback(async () => {
     console.log('Trying to continue game...');
     const sizes = [3, 4, 5];
     for (const size of sizes) {
@@ -49,16 +48,7 @@ function App() {
         break;
       }
     }
-  }, []);
-
-  /*useEffect(() => {
-    supabase
-      .from('ratings')
-      .select('*')
-      .then(({ data, error }) => {
-        console.log('Supabase test:', { data, error });
-      });
-  }, []);*/
+  }, []); */
 
   return (
     <div className="app-container">
@@ -66,10 +56,10 @@ function App() {
         <MainMenu
           onStartGame={(size) => {
             setGridSize(size);
-            setSavedGame(null);
+            /* setSavedGame(null); */
             setScreen('game');
           }}
-          onContinueGame={handleContinue}
+          /* onContinueGame={handleContinue} */
           currentColor={currentColor}
           onColorChange={handleColorChange}
           onShowRules={() => handleShowRules(currentColor)}
@@ -80,7 +70,7 @@ function App() {
       {screen === 'game' && (
         <GameScreen
           size={gridSize}
-          savedData={savedGame}
+          /*savedData={savedGame}*/
           onBackToMenu={() => setScreen('menu')}
         />
       )}
