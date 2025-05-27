@@ -16,6 +16,7 @@ const mergeShapes = (row, setScore) => {
 };
 
 const GameScreen = ({ size, onBackToMenu }) => {
+  const [touchStart, setTouchStart] = useState(null);
   const buttonColor = localStorage.getItem('buttonColor') || '#5181B8';
 
   const [grid, setGrid] = useState(() => {
@@ -29,7 +30,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
 
   const moveLeft = useCallback((grid, setScore) => {
     if (!grid || !grid.length) return grid;
-    
+
     return grid.map(row => {
       const filteredRow = row.filter(cell => cell !== 0);
       const mergedRow = mergeShapes(filteredRow, setScore);
@@ -39,7 +40,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
 
   const moveRight = useCallback((grid, setScore) => {
     if (!grid || !grid.length) return grid;
-    
+
     return grid.map(row => {
       const filteredRow = row.filter(cell => cell !== 0);
       const mergedRow = mergeShapes(filteredRow, setScore);
@@ -51,7 +52,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
     if (!grid || !grid.length) return grid;
 
     const newGrid = grid.map(row => [...row]);
-    
+
     for (let col = 0; col < newGrid[0].length; col++) {
       let column = newGrid.map(row => row[col]).filter(cell => cell !== 0);
       column = mergeShapes(column, setScore);
@@ -60,7 +61,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
         newGrid[rowIndex][col] = cell;
       });
     }
-    
+
     return newGrid;
   }, []);
 
@@ -68,7 +69,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
     if (!grid || !grid.length) return grid;
 
     const newGrid = grid.map(row => [...row]);
-    
+
     for (let col = 0; col < newGrid[0].length; col++) {
       let column = newGrid.map(row => row[col]).filter(cell => cell !== 0);
       column = mergeShapes(column, setScore);
@@ -77,7 +78,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
         newGrid[rowIndex][col] = cell;
       });
     }
-    
+
     return newGrid;
   }, []);
 
@@ -102,13 +103,46 @@ const GameScreen = ({ size, onBackToMenu }) => {
     });
   }, [gameOver, grid]);
 
+  const handleTouchStart = useCallback((e) => {
+    if (gameOver) return;
+    const touch = e.touches[0];
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+  }, [gameOver]);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (gameOver || !touchStart) return;
+    const touch = e.changedTouches[0];
+    const touchEnd = { x: touch.clientX, y: touch.clientY };
+
+    const dx = touchEnd.x - touchStart.x;
+    const dy = touchEnd.y - touchStart.y;
+
+    // Определяем направление свайпа
+    if (Math.abs(dx) > Math.abs(dy)) {
+      // Горизонтальный свайп
+      if (dx > 50) {
+        handleMove(moveRight);
+      } else if (dx < -50) {
+        handleMove(moveLeft);
+      }
+    } else {
+      // Вертикальный свайп
+      if (dy > 50) {
+        handleMove(moveDown);
+      } else if (dy < -50) {
+        handleMove(moveUp);
+      }
+    }
+
+    setTouchStart(null);
+  }, [gameOver, touchStart, handleMove, moveUp, moveDown, moveLeft, moveRight]);
+
   useEffect(() => {
     if (isGameOver(grid) && !gameOver) {
       setGameOver(true);
       setTimeout(() => {
-        alert(`Игра окончена! Ваш счёт: ${score}\nРазмер поля: ${size}x${size}`);
         onBackToMenu();
-      }, 500);
+      }, 10000);
       saveRating(size, score);
     }
   }, [grid, score, size, gameOver, isGameOver, onBackToMenu]);
@@ -194,15 +228,17 @@ const GameScreen = ({ size, onBackToMenu }) => {
   }), []);
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}>
       <div style={styles.header}>
-        <Button 
+        <Button
           onClick={onBackToMenu}
           style={{ backgroundColor: buttonColor, color: 'white' }}
         >
           ◂ Меню
         </Button>
-        <Title level="2" style={{ fontSize: '24px', fontWeight: 'bold', color: '#fff', letterSpacing: '1.5px' }}>
+        <Title level="2" style={{ fontSize: '24px', fontWeight: 'bold', color: '#fff', letterSpacing: '1.5px', marginTop: '24px' }}>
           Счёт: {score}
         </Title>
       </div>
@@ -211,42 +247,14 @@ const GameScreen = ({ size, onBackToMenu }) => {
         <GameGrid grid={grid} prevGrid={prevGrid} cellSize={cellSize} />
       </div>
 
-      {/*<div style={styles.controls}>
-        <div></div>
-        <Button 
-          onClick={() => handleMove(moveUp)} 
-          style={{ backgroundColor: buttonColor, color: 'white' }}
-        >
-          ▲
-        </Button>
-        <div></div>
-        <Button 
-          onClick={() => handleMove(moveLeft)} 
-          style={{ backgroundColor: buttonColor, color: 'white' }}
-        >
-          ◀
-        </Button>
-        <Button 
-          onClick={() => handleMove(moveDown)} 
-          style={{ backgroundColor: buttonColor, color: 'white' }}
-        >
-          ▼
-        </Button>
-        <Button 
-          onClick={() => handleMove(moveRight)} 
-          style={{ backgroundColor: buttonColor, color: 'white' }}
-        >
-          ▶
-        </Button>
-      </div> */}
-
       {gameOver && (
         <div style={styles.gameOverScreen}>
-          <Title level="1">Игра окончена!</Title>
-          <div style={{ margin: '20px 0' }}>Ваш счёт: {score}</div>
-          <Button 
-            size="l" 
-            onClick={onBackToMenu} 
+          <Title level="1" style={{ textAlign: 'center' }}>А всё!<br />Игра окончена!</Title>
+          <div style={{ margin: '20px 0', fontSize: '18px' }}>Ваш счёт: <span
+            style={{ color: '#ff3030', fontWeight: '900', fontFamily: 'system-ui' }}>{score}</span></div>
+          <Button
+            size="l"
+            onClick={onBackToMenu}
             style={{ marginTop: '20px', backgroundColor: buttonColor, color: 'white' }}
           >
             В меню

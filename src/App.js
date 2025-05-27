@@ -4,40 +4,32 @@ import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
 import RatingScreen from './components/RatingScreen';
 import AudioController from './components/AudioController';
-import bridge from '@vkontakte/vk-bridge';
 
 function App() {
-  // Разрешаем аудио в VK
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.vkBridge) {
-      try {
-        window.vkBridge.send('VKWebAppAllowNotifications')
-          .then(() => console.log('Permissions granted'))
-          .catch(e => console.log('Permission request failed:', e));
-      } catch (e) {
-        console.log('Bridge error:', e);
-      }
-    }
-  }, []);
   const [screen, setScreen] = useState('menu');
   const [gridSize, setGridSize] = useState(4);
   const [currentColor, setCurrentColor] = useState(
     localStorage.getItem('buttonColor') || '#5181B8'
   );
 
+  // Безопасная инициализация VK Bridge
+  useEffect(() => {
+    const initVK = async () => {
+      if (typeof window.vkBridge !== 'undefined') {
+        try {
+          await window.vkBridge.send('VKWebAppInit');
+          await window.vkBridge.send('VKWebAppAllowNotifications');
+        } catch (e) {
+          console.warn('VK Bridge init error:', e);
+        }
+      }
+    };
+    initVK();
+  }, []);
+
   const handleColorChange = (color) => {
     setCurrentColor(color);
     localStorage.setItem('buttonColor', color);
-  };
-
-  const handleShowRating = (color) => {
-    setCurrentColor(color);
-    setScreen('rating');
-  };
-
-  const handleShowRules = (color) => {
-    setCurrentColor(color);
-    setScreen('rules');
   };
 
   return (
@@ -50,8 +42,8 @@ function App() {
           }}
           currentColor={currentColor}
           onColorChange={handleColorChange}
-          onShowRules={() => handleShowRules(currentColor)}
-          onShowRating={() => handleShowRating(currentColor)}
+          onShowRules={() => setScreen('rules')}
+          onShowRating={() => setScreen('rating')}
         />
       )}
 
