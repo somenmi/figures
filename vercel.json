@@ -11,9 +11,18 @@
     ],
     "routes": [
         {
-            "src": "/music/(.*)",
+            "src": "/music/(.*\.ogg)",
             "headers": {
-                "Content-Type": "audio/ogg"
+                "Content-Type": "audio/ogg",
+                "Cache-Control": "public, max-age=31536000, immutable"
+            },
+            "continue": true
+        },
+        {
+            "src": "/music/(.*\.mp3)",
+            "headers": {
+                "Content-Type": "audio/mpeg",
+                "Cache-Control": "public, max-age=31536000, immutable"
             },
             "continue": true
         },
