@@ -11,7 +11,7 @@
     ],
     "routes": [
         {
-            "src": "/music/(.*\.ogg)",
+            "src": "/music/game-bg-l.ogg",
             "headers": {
                 "Content-Type": "audio/ogg",
                 "Cache-Control": "public, max-age=31536000, immutable"
@@ -19,7 +19,7 @@
             "continue": true
         },
         {
-            "src": "/music/(.*\.mp3)",
+            "src": "/music/game-bg-l.mp3",
             "headers": {
                 "Content-Type": "audio/mpeg",
                 "Cache-Control": "public, max-age=31536000, immutable"
