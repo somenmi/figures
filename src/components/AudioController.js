@@ -2,57 +2,66 @@ import { useState, useEffect } from 'react';
 import { Icon24Volume, Icon24Mute } from '@vkontakte/icons';
 
 const AudioController = () => {
-  const [isMuted, setIsMuted] = useState(
-    localStorage.getItem('isMuted') === 'true'
-  );
+  const [isMuted, setIsMuted] = useState(true);
   const [audio, setAudio] = useState(null);
-  const [hasInteracted, setHasInteracted] = useState(false);
 
-  // Инициализация после взаимодействия
-  const handleFirstInteraction = () => {
-    if (!hasInteracted) {
-      const newAudio = new Audio();
-      newAudio.src = process.env.PUBLIC_URL + '/music/game-bg.ogg'; // Используем OGG
-      newAudio.loop = true;
-      newAudio.volume = 0.3;
-      setAudio(newAudio);
-      setHasInteracted(true);
-      
-      if (!isMuted) {
-        newAudio.play().catch(e => console.log('Initial play failed:', e));
-      }
+  const initAudio = () => {
+    const newAudio = new Audio();
+    
+    // Добавляем оба источника для максимальной совместимости
+    const sourceOgg = document.createElement('source');
+    sourceOgg.src = process.env.PUBLIC_URL + '/music/game-bg-l.ogg';
+    sourceOgg.type = 'audio/ogg';
+    
+    const sourceMp3 = document.createElement('source');
+    sourceMp3.src = process.env.PUBLIC_URL + '/music/game-bg-l.mp3';
+    sourceMp3.type = 'audio/mpeg';
+    
+    newAudio.appendChild(sourceOgg);
+    newAudio.appendChild(sourceMp3);
+    newAudio.loop = true;
+    newAudio.volume = 0.3;
+    
+    setAudio(newAudio);
+    return newAudio;
+  };
+
+  const toggleMute = () => {
+    if (!audio) {
+      const newAudio = initAudio();
+      newAudio.play()
+        .then(() => setIsMuted(false))
+        .catch(e => console.error('Play failed:', e));
+    } else if (isMuted) {
+      audio.play()
+        .then(() => setIsMuted(false))
+        .catch(e => console.error('Play failed:', e));
+    } else {
+      audio.pause();
+      setIsMuted(true);
     }
   };
 
+  // Предзагрузка аудио при первом взаимодействии
   useEffect(() => {
-    document.addEventListener('click', handleFirstInteraction);
-    document.addEventListener('touchstart', handleFirstInteraction);
+    const handleInteraction = () => {
+      if (!audio) {
+        initAudio();
+      }
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+    
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
     
     return () => {
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('touchstart', handleFirstInteraction);
       if (audio) {
         audio.pause();
         audio.src = '';
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (!audio) return;
-    
-    if (isMuted) {
-      audio.pause();
-    } else {
-      audio.play().catch(e => console.log('Play error:', e));
-    }
-    
-    localStorage.setItem('isMuted', isMuted.toString());
-  }, [isMuted, audio]);
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-  };
 
   return (
     <div 
