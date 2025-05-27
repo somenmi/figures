@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
 import RatingScreen from './components/RatingScreen';
 import AudioController from './components/AudioController';
+import bridge from '@vkontakte/vk-bridge';
 
 function App() {
+  // Разрешаем аудио в VK
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.vkBridge) {
+      try {
+        window.vkBridge.send('VKWebAppAllowNotifications')
+          .then(() => console.log('Permissions granted'))
+          .catch(e => console.log('Permission request failed:', e));
+      } catch (e) {
+        console.log('Bridge error:', e);
+      }
+    }
+  }, []);
   const [screen, setScreen] = useState('menu');
   const [gridSize, setGridSize] = useState(4);
   const [currentColor, setCurrentColor] = useState(
