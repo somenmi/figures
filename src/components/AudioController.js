@@ -1,52 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Icon24Volume, Icon24Mute } from '@vkontakte/icons';
 
 const AudioController = () => {
-  const [isMuted, setIsMuted] = useState(
-    localStorage.getItem('isMuted') === 'true'
-  );
+  const [isMuted, setIsMuted] = useState(true);
   const [audio, setAudio] = useState(null);
 
-  useEffect(() => {
-    // Создаем аудио элемент только при взаимодействии
-    const handleFirstInteraction = () => {
-      const newAudio = new Audio();
-      newAudio.src = '/music/game-bg.mp3';
+  const toggleMute = () => {
+    if (!audio) {
+      // Создаем аудио только при первом клике
+      const newAudio = new Audio('/music/game-bg.mp3');
       newAudio.loop = true;
       newAudio.volume = 0.3;
+      newAudio.play().catch(e => console.error('Play error:', e));
       setAudio(newAudio);
-      
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('touchstart', handleFirstInteraction);
-    };
-
-    document.addEventListener('click', handleFirstInteraction);
-    document.addEventListener('touchstart', handleFirstInteraction);
-
-    return () => {
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('touchstart', handleFirstInteraction);
-      if (audio) {
-        audio.pause();
-        audio.src = '';
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!audio) return;
-
-    if (isMuted) {
-      audio.pause();
+      setIsMuted(false);
+    } else if (isMuted) {
+      audio.play().catch(e => console.error('Play error:', e));
+      setIsMuted(false);
     } else {
-      audio.play().catch(e => console.log('Audio play error:', e));
+      audio.pause();
+      setIsMuted(true);
     }
-  }, [isMuted, audio]);
-
-  const toggleMute = () => {
-    const newMuted = !isMuted;
-    setIsMuted(newMuted);
-    localStorage.setItem('isMuted', newMuted.toString());
   };
 
   return (
