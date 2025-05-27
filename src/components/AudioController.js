@@ -1,71 +1,47 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon24Volume, Icon24Mute } from '@vkontakte/icons';
 
 const AudioController = () => {
   const [isMuted, setIsMuted] = useState(
     localStorage.getItem('isMuted') === 'true'
   );
-  const audioRef = useRef(null);
+  const [audio, setAudio] = useState(null);
 
-  // Мемоизированный обработчик первого взаимодействия
-  const handleFirstInteraction = useCallback(() => {
-    if (audioRef.current && !isMuted) {
-      audioRef.current.play()
-        .then(() => {
-          console.log('Audio started after interaction');
-        })
-        .catch(e => {
-          console.error('Audio play error after interaction:', e);
-        });
-    }
-    document.removeEventListener('click', handleFirstInteraction);
-  }, [isMuted]);
-
-  // Инициализация аудио
   useEffect(() => {
-    if (typeof Audio !== 'undefined') {
-      audioRef.current = new Audio('/music/game-bg.mp3');
-      audioRef.current.loop = true;
-      audioRef.current.volume = 0.06;
+    // Создаем аудио элемент только при взаимодействии
+    const handleFirstInteraction = () => {
+      const newAudio = new Audio();
+      newAudio.src = '/music/game-bg.mp3';
+      newAudio.loop = true;
+      newAudio.volume = 0.3;
+      setAudio(newAudio);
       
-      const tryPlay = () => {
-        if (!isMuted && audioRef.current) {
-          audioRef.current.play()
-            .then(() => {
-              console.log('Audio started automatically');
-            })
-            .catch(e => {
-              console.log('Autoplay prevented, will wait for interaction:', e);
-              document.addEventListener('click', handleFirstInteraction);
-            });
-        }
-      };
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
 
-      tryPlay();
-    }
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
       document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
     };
-  }, [isMuted, handleFirstInteraction]); // Добавлены зависимости
+  }, []);
 
-  // Контроль состояния звука
   useEffect(() => {
-    if (!audioRef.current) return;
+    if (!audio) return;
 
     if (isMuted) {
-      audioRef.current.pause();
+      audio.pause();
     } else {
-      audioRef.current.play().catch(e => {
-        console.log('Play prevented, waiting for interaction:', e);
-        document.addEventListener('click', handleFirstInteraction);
-      });
+      audio.play().catch(e => console.log('Audio play error:', e));
     }
-  }, [isMuted, handleFirstInteraction]); // Добавлена зависимость
+  }, [isMuted, audio]);
 
   const toggleMute = () => {
     const newMuted = !isMuted;
