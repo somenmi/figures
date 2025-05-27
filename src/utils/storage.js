@@ -15,7 +15,6 @@ export const saveRating = async (gridSize, score) => {
 
     // 2. Если рекорд не улучшен - выходим
     if (existing && existing.score >= score) {
-      console.log('Текущий рекорд выше, не обновляем');
       return;
     }
 
@@ -50,17 +49,15 @@ export const saveRating = async (gridSize, score) => {
         .delete()
         .in('id', idsToDelete);
 
-      if (deleteError) console.error('Ошибка очистки:', deleteError);
+      if (deleteError);
     }
 
   } catch (e) {
-    console.error('Ошибка сохранения:', e);
   }
 };
 
 export const getRatings = async (gridSize) => {
   try {
-    console.log('Пытаюсь извлечь из Supabase...');
     const { data, error } = await supabase
       .from('ratings')
       .select('*')
@@ -68,15 +65,10 @@ export const getRatings = async (gridSize) => {
       .order('score', { ascending: false })
       .limit(100);
 
-    if (error) {
-      console.error('Supabase ОШИБКА:', error);
-      return [];
-    }
+    if (error) return [];
 
-    console.log('Полученные данные:', data);
     return data;
   } catch (e) {
-    console.error('Глобальная ошибка выборки:', e);
     return [];
   }
 };
@@ -114,7 +106,7 @@ export const clearAllSavedGames = async () => {
   }
 };
 
-console.log('Текущие ограничения таблицы:');
+/*console.log('Текущие ограничения таблицы:');
 const { data: constraints } = await supabase
   .rpc('get_constraints', { table_name: 'ratings' });
-console.log(constraints);
+console.log(constraints);*/

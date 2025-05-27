@@ -8,6 +8,7 @@
   ],
   "author": "Виктор AWALORES",
   "permissions": [
+    "audio",
     "VKWebAppStorageGet",
     "VKWebAppStorageSet",
     "VKWebAppInit"
