@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainMenu from './components/MainMenu';
 import GameScreen from './components/GameScreen';
 import RulesScreen from './components/RulesScreen';
 import RatingScreen from './components/RatingScreen';
 import AudioController from './components/AudioController';
+import bridge from '@vkontakte/vk-bridge';
 
 function App() {
+  // Разрешаем аудио в VK
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.vkBridge) {
+      window.vkBridge.send('VKWebAppAllowAudioAds', {})
+        .then(() => console.log('Audio permission granted'))
+        .catch(e => console.error('Audio permission error:', e));
+    }
+  }, []);
   const [screen, setScreen] = useState('menu');
   const [gridSize, setGridSize] = useState(4);
   const [currentColor, setCurrentColor] = useState(
