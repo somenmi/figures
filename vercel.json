@@ -1,5 +1,16 @@
 {
     "version": 2,
+    "headers": [
+        {
+            "source": "/music/(.*)",
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "audio/mpeg"
+                }
+            ]
+        }
+    ],
     "builds": [
         {
             "src": "package.json",
