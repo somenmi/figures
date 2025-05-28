@@ -1,93 +1,66 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Icon24Volume, Icon24Mute } from '@vkontakte/icons';
 
 const AudioController = () => {
   const [isMuted, setIsMuted] = useState(true);
-  const [audio, setAudio] = useState(null);
-  const [isUserInteracted, setIsUserInteracted] = useState(false);
+  const audioRef = useRef(null);
+  const isInitialized = useRef(false);
 
-  // Инициализация аудио
-  useEffect(() => {
-    const audioElement = new Audio();
-    const sourceOgg = document.createElement('source');
-    sourceOgg.src = process.env.PUBLIC_URL + '/music/game-bg-l.ogg';
-    sourceOgg.type = 'audio/ogg';
-    
-    const sourceMp3 = document.createElement('source');
-    sourceMp3.src = process.env.PUBLIC_URL + '/music/game-bg-l.mp3';
-    sourceMp3.type = 'audio/mpeg';
-    
-    audioElement.appendChild(sourceOgg);
-    audioElement.appendChild(sourceMp3);
-    audioElement.loop = true;
-    audioElement.volume = 0.3;
-    audioElement.preload = 'auto';
-    
-    setAudio(audioElement);
+  // Инициализация при первом взаимодействии
+  const initAudio = () => {
+    if (isInitialized.current) return;
+    isInitialized.current = true;
 
-    return () => {
-      audioElement.pause();
-      audioElement.src = '';
-    };
-  }, []);
+    const audio = new Audio();
+    audio.src = `${process.env.PUBLIC_URL}/music/game.mp3`;
+    audio.loop = true;
+    audio.volume = 0.3;
+    audio.preload = 'auto';
+    audio.load();
+    audioRef.current = audio;
+  };
 
-  // Обработчик взаимодействия пользователя
-  useEffect(() => {
-    const handleInteraction = () => {
-      if (!isUserInteracted) {
-        setIsUserInteracted(true);
-      }
-    };
-
-    document.addEventListener('click', handleInteraction);
-    document.addEventListener('touchstart', handleInteraction);
-    
-    return () => {
-      document.removeEventListener('click', handleInteraction);
-      document.removeEventListener('touchstart', handleInteraction);
-    };
-  }, [isUserInteracted]);
-
-  // Безопасная функция воспроизведения
-  const playAudio = useCallback(async () => {
-    if (!audio) return false;
-
+  const handleClick = async () => {
     try {
-      await audio.play();
-      return true;
-    } catch (err) {
-      // Попробуем запросить разрешение в VK
+      initAudio();
+      const audio = audioRef.current;
+
+      if (isMuted) {
+        // Попытка воспроизведения
+        await audio.play();
+        setIsMuted(false);
+      } else {
+        audio.pause();
+        setIsMuted(true);
+      }
+    } catch (error) {
+      console.warn('Audio error:', error);
+      // Для VK Mini Apps
       if (window.vkBridge) {
         try {
           await window.vkBridge.send('VKWebAppAllowNotifications');
-          await audio.play();
-          return true;
-        } catch (vkErr) {
+          await audioRef.current.play();
+          setIsMuted(false);
+        } catch (vkError) {
           console.warn('VK audio permission denied');
-          return false;
         }
       }
-      return false;
     }
-  }, [audio]);
+  };
 
-  const toggleMute = useCallback(async () => {
-    if (!audio) return;
-
-    if (isMuted) {
-      if (!isUserInteracted) return;
-      
-      const success = await playAudio();
-      setIsMuted(!success);
-    } else {
-      audio.pause();
-      setIsMuted(true);
-    }
-  }, [audio, isMuted, isUserInteracted, playAudio]);
+  // Очистка при размонтировании
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   return (
-    <div 
-      onClick={toggleMute}
+    <div
+      onClick={handleClick}
       style={{
         position: 'fixed',
         bottom: '20px',
