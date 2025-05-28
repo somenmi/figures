@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Title, Div, Popover } from '@vkontakte/vkui';
-import { Icon24Game, Icon24PaletteOutline } from '@vkontakte/icons';
+import { Icon24Game, Icon24PaletteOutline, Icon24MenuOutline, Icon24ArticlesOutline } from '@vkontakte/icons';
 import '../MainMenu.css';
 
 const MainMenu = ({
@@ -101,6 +101,7 @@ const MainMenu = ({
       <div className="action-buttons">
         <Button
           size="l"
+          before={<Icon24MenuOutline />}
           className="action-button"
           style={{ backgroundColor: buttonColor }}
           onClick={() => onShowRating(buttonColor)}
@@ -109,6 +110,7 @@ const MainMenu = ({
         </Button>
         <Button
           size="l"
+          before={<Icon24ArticlesOutline />}
           className="action-button"
           style={{ backgroundColor: buttonColor }}
           onClick={() => onShowRules(buttonColor)}

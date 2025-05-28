@@ -65,12 +65,13 @@ const AudioController = () => {
         right: '20px',
         zIndex: 1000,
         cursor: 'pointer',
-        background: 'rgba(0,0,0,0.5)',
+        background: 'rgba(0, 0, 0, 0.2)',
         borderRadius: '50%',
         padding: '10px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        opacity: '35%',
       }}
     >
       {isMuted ? (
