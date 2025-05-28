@@ -1,41 +1,49 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Icon24Volume, Icon24Mute } from '@vkontakte/icons';
 
 const AudioController = () => {
   const [isMuted, setIsMuted] = useState(true);
   const audioRef = useRef(null);
-  const isInitialized = useRef(false);
 
-  // Инициализация при первом взаимодействии
-  const initAudio = () => {
-    if (isInitialized.current) return;
-    isInitialized.current = true;
+  useEffect(() => {
+    // Создаем аудио только при первом взаимодействии
+    const handleFirstInteraction = () => {
+      if (!audioRef.current) {
+        const audio = new Audio();
+        audio.src = `${process.env.PUBLIC_URL}/music/game.mp3`;
+        audio.loop = true;
+        audio.volume = 0.3;
+        audio.preload = 'none';
+        audioRef.current = audio;
+      }
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
 
-    const audio = new Audio();
-    audio.src = `${process.env.PUBLIC_URL}/music/game.mp3`;
-    audio.loop = true;
-    audio.volume = 0.3;
-    audio.preload = 'auto';
-    audio.load();
-    audioRef.current = audio;
-  };
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
 
-  const handleClick = async () => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  const toggleMute = async () => {
+    if (!audioRef.current) return;
+
     try {
-      initAudio();
-      const audio = audioRef.current;
-
       if (isMuted) {
-        // Попытка воспроизведения
-        await audio.play();
+        await audioRef.current.play();
         setIsMuted(false);
       } else {
-        audio.pause();
+        audioRef.current.pause();
         setIsMuted(true);
       }
     } catch (error) {
-      console.warn('Audio error:', error);
-      // Для VK Mini Apps
+      console.warn('Playback failed:', error);
+      // Для VK
       if (window.vkBridge) {
         try {
           await window.vkBridge.send('VKWebAppAllowNotifications');
@@ -48,19 +56,9 @@ const AudioController = () => {
     }
   };
 
-  // Очистка при размонтировании
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
   return (
     <div
-      onClick={handleClick}
+      onClick={toggleMute}
       style={{
         position: 'fixed',
         bottom: '20px',
