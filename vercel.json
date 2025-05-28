@@ -11,13 +11,18 @@
     ],
     "routes": [
         {
-            "src": "/music/(.*)",
+            "src": "/music/game.mp3",
             "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "audio/(ogg|mpeg)",
-                "Cache-Control": "public, max-age=31536000, immutable"
-            },
-            "continue": true
+                "Content-Type": "audio/mpeg",
+                "Cache-Control": "public, max-age=31536000"
+            }
+        },
+        {
+            "src": "/music/game.ogg",
+            "headers": {
+                "Content-Type": "audio/ogg",
+                "Cache-Control": "public, max-age=31536000"
+            }
         },
         {
             "src": "/manifest.json",
