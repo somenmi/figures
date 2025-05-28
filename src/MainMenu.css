@@ -187,3 +187,19 @@
         transform: translateY(0);
     }
 }
+
+.music-icon-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+}
+
+.music-icon-toggle .vkuiButton {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.music-icon-toggle .vkuiButton:hover {
+    opacity: 1;
+}

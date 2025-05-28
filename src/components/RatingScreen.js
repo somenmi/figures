@@ -54,7 +54,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
             key={size}
             style={{
               backgroundColor: buttonColor,
-              opacity: selectedSize === size ? 1 : 0.7
+              opacity: selectedSize === size ? 1 : 0.3
             }}
             onClick={() => setSelectedSize(size)}
           >
