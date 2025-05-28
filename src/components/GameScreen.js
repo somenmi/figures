@@ -109,6 +109,8 @@ const GameScreen = ({ size, onBackToMenu }) => {
     setTouchStart({ x: touch.clientX, y: touch.clientY });
   }, [gameOver]);
 
+  const [swipeFeedback, setSwipeFeedback] = useState(null);
+
   const handleTouchEnd = useCallback((e) => {
     if (gameOver || !touchStart) return;
     const touch = e.changedTouches[0];
@@ -116,22 +118,25 @@ const GameScreen = ({ size, onBackToMenu }) => {
 
     const dx = touchEnd.x - touchStart.x;
     const dy = touchEnd.y - touchStart.y;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
 
-    // Определяем направление свайпа
-    if (Math.abs(dx) > Math.abs(dy)) {
-      // Горизонтальный свайп
-      if (dx > 50) {
-        handleMove(moveRight);
-      } else if (dx < -50) {
-        handleMove(moveLeft);
-      }
-    } else {
-      // Вертикальный свайп
-      if (dy > 50) {
-        handleMove(moveDown);
-      } else if (dy < -50) {
-        handleMove(moveUp);
-      }
+    let direction = null;
+
+    if (absDx > absDy && absDx > 30 && absDy < 20) {
+      direction = dx > 0 ? 'right' : 'left';
+    } else if (absDy > absDx && absDy > 30 && absDx < 20) {
+      direction = dy > 0 ? 'down' : 'up';
+    }
+
+    if (direction) {
+      setSwipeFeedback(direction);
+      setTimeout(() => setSwipeFeedback(null), 300);
+
+      if (direction === 'right') handleMove(moveRight);
+      else if (direction === 'left') handleMove(moveLeft);
+      else if (direction === 'up') handleMove(moveUp);
+      else if (direction === 'down') handleMove(moveDown);
     }
 
     setTouchStart(null);
@@ -231,6 +236,9 @@ const GameScreen = ({ size, onBackToMenu }) => {
     <div style={styles.container}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}>
+      {swipeFeedback && (
+        <div className={`swipe-feedback active swipe-${swipeFeedback}`} />
+      )}
       <div style={styles.header}>
         <Button
           onClick={onBackToMenu}
