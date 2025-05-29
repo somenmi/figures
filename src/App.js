@@ -12,7 +12,6 @@ function App() {
     localStorage.getItem('buttonColor') || '#5181B8'
   );
 
-  // Безопасная инициализация VK Bridge
   useEffect(() => {
     const initVK = async () => {
       if (typeof window.vkBridge !== 'undefined') {

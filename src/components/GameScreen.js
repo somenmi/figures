@@ -4,7 +4,6 @@ import { saveRating } from '../utils/storage';
 import { Button, Title } from '@vkontakte/vkui';
 import { Icon24ArrowUturnLeftOutline } from '@vkontakte/icons';
 
-// Оптимизированная функция объединения фигур
 const mergeShapes = (row) => {
   const newRow = [...row];
   let scoreIncrease = 0;
@@ -35,7 +34,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     prevGrid: []
   }));
 
-  // Функции движения
   const moveLeft = useCallback((grid) => {
     let totalScore = 0;
     const newGrid = grid.map(row => {
@@ -90,7 +88,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     return { grid: newGrid, score: totalScore };
   }, []);
 
-  // Проверка окончания игры
   const isGameOver = useCallback((grid) => {
     const size = grid.length;
     for (let i = 0; i < size; i++) {
@@ -103,7 +100,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     return true;
   }, []);
 
-  // Обработчик движения
   const handleMove = useCallback((moveFunction) => {
     const now = performance.now();
     if (now - lastMoveTimeRef.current < 100) return;
@@ -121,7 +117,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
 
       if (gameOver) {
         saveRating(size, newScore);
-        setTimeout(onBackToMenu, 150000);
+        setTimeout(onBackToMenu, 20000);
       }
 
       return {
@@ -134,7 +130,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     });
   }, [isGameOver, onBackToMenu, size]);
 
-  // Обработчики касаний
   const handleTouchStart = useCallback((e) => {
     if (gameState.gameOver) return;
     const touch = e.touches[0];
@@ -157,25 +152,32 @@ const GameScreen = ({ size, onBackToMenu }) => {
     const absDy = Math.abs(dy);
     const timeDiff = performance.now() - startTime;
 
-    const minDistance = 30;
-    const maxTime = 250;
+    // 1. Минимальное расстояние свайпа (в пикселях)
+    const minDistance = 25;
+
+    // 2. Максимальное время для распознавания свайпа (в миллисекундах)
+    const maxTime = 350;
+
+    // 3. Порог скорости (пикселей/миллисекунду)
     const velocityThreshold = 0.3;
+
+    // 4. Угол отклонения (отношение dy/dx)
+    const maxAngleRatio = 0.7; // Чем меньше, тем строже по горизонтали/вертикали
 
     if (timeDiff > maxTime && (absDx / timeDiff < velocityThreshold && absDy / timeDiff < velocityThreshold)) {
       touchStartRef.current = null;
       return;
     }
 
-    if (absDx > absDy && absDx > minDistance) {
+    if (absDx > absDy && absDx > minDistance && absDy / absDx < maxAngleRatio) {
       handleMove(dx > 0 ? moveRight : moveLeft);
-    } else if (absDy > minDistance) {
+    } else if (absDy > minDistance && absDx / absDy < maxAngleRatio) {
       handleMove(dy > 0 ? moveDown : moveUp);
     }
 
     touchStartRef.current = null;
   }, [handleMove, moveDown, moveLeft, moveRight, moveUp]);
 
-  // Обработчик клавиатуры
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (gameState.gameOver) return;
@@ -191,7 +193,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [gameState.gameOver, handleMove, moveDown, moveLeft, moveRight, moveUp]);
 
-  // Расчет размера ячейки
   const calculateCellSize = useCallback(() => {
     return Math.floor((Math.min(window.innerWidth, 500) * 0.9) / size);
   }, [size]);
@@ -207,7 +208,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [calculateCellSize]);
 
-  // Стили
   const styles = useMemo(() => ({
     container: {
       touchAction: 'none',
@@ -301,7 +301,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
   );
 };
 
-// Вспомогательная функция добавления случайной фигуры
 const addRandomShape = (grid) => {
   const emptyCells = [];
   grid.forEach((row, i) => row.forEach((cell, j) => {

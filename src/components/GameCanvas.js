@@ -1,4 +1,3 @@
-// src/components/GameCanvas.js
 import React, { useRef, useEffect } from 'react';
 import { SHAPES } from '../game/shapes';
 
@@ -10,7 +9,6 @@ const GameCanvas = ({ grid, cellSize }) => {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Отрисовка всех фигур из grid
     grid.forEach((row, rowIndex) => {
       row.forEach((cellValue, colIndex) => {
         if (cellValue > 0) {

@@ -5,23 +5,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- Основные иконки -->
   <link rel="icon" href="./favicon.ico" sizes="32x32">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./logo.svg" type="image/svg+xml">
 
-  <!-- Для iOS -->
   <link rel="apple-touch-icon" href="./logo192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Фигуры 2048">
 
-  <!-- Для Android PWA -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#242424">
   <meta name="msapplication-TileColor" content="#242424">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- VK Specific -->
   <meta property="og:image" content="https://figures-iota.vercel.app/logo512.png">
   <meta property="og:title" content="Фигуры 2048">
   <meta property="og:description" content="中凵⺁丫尸Ђ丨 - игра похожая на 2048, но вместо цифр фигуры.">
@@ -57,7 +53,6 @@
   <div id="root"></div>
 
   <script>
-    // Инициализация VK Bridge с обработкой ошибок
     if (typeof window.vkBridge !== 'undefined') {
       window.vkBridge.send('VKWebAppInit')
         .catch(e => console.error('VK Bridge init error:', e));
