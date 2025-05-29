@@ -6,7 +6,6 @@ const AudioController = () => {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    // Создаем аудио только при первом взаимодействии
     const handleFirstInteraction = () => {
       if (!audioRef.current) {
         const audio = new Audio();
@@ -65,7 +64,7 @@ const AudioController = () => {
         right: '20px',
         zIndex: 1000,
         cursor: 'pointer',
-        background: 'rgba(0, 0, 0, 0.2)',
+        background: 'rgba(0, 0, 0, 0.18)',
         borderRadius: '50%',
         padding: '10px',
         display: 'flex',
@@ -75,9 +74,9 @@ const AudioController = () => {
       }}
     >
       {isMuted ? (
-        <Icon24Mute fill="#fff" width={28} height={28} />
+        <Icon24Mute fill="#fff" width={24} height={24} />
       ) : (
-        <Icon24Volume fill="#fff" width={28} height={28} />
+        <Icon24Volume fill="#fff" width={24} height={24} />
       )}
     </div>
   );

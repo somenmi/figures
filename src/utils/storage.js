@@ -105,8 +105,3 @@ export const clearAllSavedGames = async () => {
     console.error('Ошибка очистки:', e);
   }
 };
-
-/*console.log('Текущие ограничения таблицы:');
-const { data: constraints } = await supabase
-  .rpc('get_constraints', { table_name: 'ratings' });
-console.log(constraints);*/

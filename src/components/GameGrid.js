@@ -4,7 +4,6 @@ import { SHAPES } from '../game/shapes';
 const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
   const cellRefs = useRef({});
 
-  // Анимация при изменении значений
   useEffect(() => {
     if (!grid.length || !cellSize) return;
 
@@ -14,10 +13,8 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
         const cellElement = cellRefs.current[key];
 
         if (cellElement) {
-          // Проверка на существование prevGrid и его элементов
           const prevCellValue = prevGrid?.[rowIndex]?.[colIndex] ?? 0;
 
-          // Анимация для новых фигур
           if (cellValue !== 0 && prevCellValue === 0) {
             cellElement.style.transform = 'scale(0.5)';
             cellElement.style.opacity = '0';
@@ -27,9 +24,8 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
             }, 10);
           }
 
-          // Анимация для слияния
           if (cellValue !== 0 && prevCellValue !== cellValue) {
-            cellElement.style.transform = 'scale(0.9)';
+            cellElement.style.transform = 'scale(0.88)';
             setTimeout(() => {
               cellElement.style.transform = 'scale(1)';
             }, 300);
@@ -39,7 +35,6 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
     });
   }, [grid, prevGrid, cellSize]);
 
-  // Проверка на пустую сетку (после всех хуков!)
   if (!grid.length || !cellSize) {
     return <div style={{ width: '100%', height: '100%' }} />;
   }
@@ -49,10 +44,10 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
       display: 'grid',
       gridTemplateColumns: `repeat(${grid[0].length}, ${cellSize}px)`,
       gridTemplateRows: `repeat(${grid.length}, ${cellSize}px)`,
-      gap: '1vmin',
+      gap: '1.4vmin',
       aspectRatio: '1/1',
-      maxWidth: '100%',
-      maxHeight: '100%',
+      maxWidth: 'auto',
+      maxHeight: 'auto',
       margin: 'auto'
     }}>
       {grid.map((row, rowIndex) =>
@@ -63,7 +58,7 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
             style={{
               width: cellSize,
               height: cellSize,
-              backgroundColor: cellValue ? SHAPES[cellValue]?.color || '#ccc' : '#bfae97',
+              backgroundColor: cellValue ? SHAPES[cellValue]?.color || '#ccc' : ' #bfae97',
               fontSize: cellSize * 0.7,
               fontWeight: 'bold',
               borderRadius: '18px',
@@ -71,7 +66,7 @@ const GameGrid = ({ grid = [], cellSize = 0, prevGrid = [] }) => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              color: '#242424'
+              color: '#242424',
             }}
           >
             {cellValue !== 0 && SHAPES[cellValue] && (
