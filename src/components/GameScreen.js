@@ -4,24 +4,6 @@ import { saveRating } from '../utils/storage';
 import { Button, Title } from '@vkontakte/vkui';
 import { Icon24ArrowUturnLeftOutline } from '@vkontakte/icons';
 
-const mergeShapes = (row) => {
-  const newRow = [...row];
-  let scoreIncrease = 0;
-
-  for (let i = 0; i < newRow.length - 1; i++) {
-    if (newRow[i] === newRow[i + 1] && newRow[i] !== 0) {
-      newRow[i] *= 2;
-      scoreIncrease += newRow[i];
-      newRow[i + 1] = 0;
-    }
-  }
-
-  return {
-    mergedRow: newRow.filter(cell => cell !== 0),
-    scoreIncrease
-  };
-};
-
 const addRandomShape = (grid) => {
   const emptyCells = [];
   grid.forEach((row, i) => row.forEach((cell, j) => {
@@ -39,31 +21,45 @@ const addRandomShape = (grid) => {
 const GameScreen = ({ size, onBackToMenu }) => {
   const touchStartRef = useRef(null);
   const lastMoveTimeRef = useRef(0);
+  const gameTimeoutRef = useRef(null);
   const buttonColor = localStorage.getItem('buttonColor') || '#5181B8';
 
-  const [gameState, setGameState] = useState(() => {
-    const initialGrid = Array(size).fill().map(() => Array(size).fill(0));
-    return {
-      grid: addRandomShape(addRandomShape(initialGrid)),
-      score: 0,
-      gameOver: false,
-      prevGrid: []
-    };
-  });
+  const [gameState, setGameState] = useState(() => ({
+    grid: addRandomShape(addRandomShape(Array(size).fill().map(() => Array(size).fill(0)))),
+    score: 0,
+    gameOver: false,
+    prevGrid: []
+  }));
 
   useEffect(() => {
+    console.log('GameScreen: Инициализация новой игры');
+
     setGameState({
       grid: addRandomShape(addRandomShape(Array(size).fill().map(() => Array(size).fill(0)))),
       score: 0,
       gameOver: false,
       prevGrid: []
     });
+
+    touchStartRef.current = null;
+    lastMoveTimeRef.current = 0;
+
+    return () => {
+      console.log('GameScreen: Очистка игры');
+      if (gameTimeoutRef.current) {
+        clearTimeout(gameTimeoutRef.current);
+        gameTimeoutRef.current = null;
+      }
+      touchStartRef.current = null;
+      lastMoveTimeRef.current = 0;
+    };
   }, [size]);
 
   const moveLeft = useCallback((grid) => {
     let totalScore = 0;
     const newGrid = grid.map(row => {
-      const { mergedRow, scoreIncrease } = mergeShapes(row.filter(cell => cell !== 0));
+      const nonZeroRow = row.filter(cell => cell !== 0);
+      const { mergedRow, scoreIncrease } = mergeShapes(nonZeroRow);
       totalScore += scoreIncrease;
       return [...mergedRow, ...Array(row.length - mergedRow.length).fill(0)];
     });
@@ -73,7 +69,8 @@ const GameScreen = ({ size, onBackToMenu }) => {
   const moveRight = useCallback((grid) => {
     let totalScore = 0;
     const newGrid = grid.map(row => {
-      const { mergedRow, scoreIncrease } = mergeShapes(row.filter(cell => cell !== 0));
+      const nonZeroRow = row.filter(cell => cell !== 0);
+      const { mergedRow, scoreIncrease } = mergeShapes(nonZeroRow);
       totalScore += scoreIncrease;
       return [...Array(row.length - mergedRow.length).fill(0), ...mergedRow];
     });
@@ -143,7 +140,12 @@ const GameScreen = ({ size, onBackToMenu }) => {
 
       if (gameOver) {
         saveRating(size, newScore);
-        setTimeout(onBackToMenu, 20000);
+        if (gameTimeoutRef.current) {
+          clearTimeout(gameTimeoutRef.current);
+        }
+        gameTimeoutRef.current = setTimeout(() => {
+          if (onBackToMenu) onBackToMenu();
+        }, 5000);
       }
 
       return {
@@ -154,7 +156,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
         gameOver
       };
     });
-  }, [isGameOver, onBackToMenu, size]);
+  }, [isGameOver, onBackToMenu, size, moveLeft, moveRight, moveUp, moveDown]);
 
   const handleTouchStart = useCallback((e) => {
     if (gameState.gameOver) return;
@@ -178,17 +180,10 @@ const GameScreen = ({ size, onBackToMenu }) => {
     const absDy = Math.abs(dy);
     const timeDiff = performance.now() - startTime;
 
-    // 1. Минимальное расстояние свайпа (в пикселях)
     const minDistance = 25;
-
-    // 2. Максимальное время для распознавания свайпа (в миллисекундах)
     const maxTime = 350;
-
-    // 3. Порог скорости (пикселей/миллисекунду)
     const velocityThreshold = 0.3;
-
-    // 4. Угол отклонения (отношение dy/dx)
-    const maxAngleRatio = 0.7; // Чем меньше, тем строже по горизонтали/вертикали
+    const maxAngleRatio = 0.7;
 
     if (timeDiff > maxTime && (absDx / timeDiff < velocityThreshold && absDy / timeDiff < velocityThreshold)) {
       touchStartRef.current = null;
@@ -216,11 +211,8 @@ const GameScreen = ({ size, onBackToMenu }) => {
     };
 
     window.addEventListener('keydown', handleKeyDown);
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      touchStartRef.current = null;
-      lastMoveTimeRef.current = 0;
     };
   }, [gameState.gameOver, handleMove, moveDown, moveLeft, moveRight, moveUp]);
 
@@ -330,6 +322,24 @@ const GameScreen = ({ size, onBackToMenu }) => {
       )}
     </div>
   );
+};
+
+const mergeShapes = (row) => {
+  const newRow = [...row];
+  let scoreIncrease = 0;
+
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1] && newRow[i] !== 0) {
+      newRow[i] *= 2;
+      scoreIncrease += newRow[i];
+      newRow[i + 1] = 0;
+    }
+  }
+
+  return {
+    mergedRow: newRow.filter(cell => cell !== 0),
+    scoreIncrease
+  };
 };
 
 export default React.memo(GameScreen);
