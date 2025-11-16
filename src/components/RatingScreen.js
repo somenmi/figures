@@ -5,9 +5,10 @@ import '../RatingScreen.css';
 
 const RatingScreen = ({ onBack, buttonColor }) => {
   const [ratings, setRatings] = useState([]);
-  const [selectedSize, setSelectedSize] = useState(3);
+  const [selectedSize, setSelectedSize] = useState({ width: 3, height: 3, label: '3×3' });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const sizes = [
     { width: 3, height: 3, label: '3×3' },
     { width: 4, height: 4, label: '4×4' },
@@ -19,7 +20,8 @@ const RatingScreen = ({ onBack, buttonColor }) => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        const data = await getRatings(selectedSize);
+        const sizeKey = `${selectedSize.width}x${selectedSize.height}`;
+        const data = await getRatings(sizeKey);
         setRatings(data);
         setError(null);
       } catch (e) {
@@ -111,7 +113,7 @@ const RatingScreen = ({ onBack, buttonColor }) => {
           })
         ) : (
           <div className='center-place' style={{ margin: '20px 0', color: '#cfcfcf', fontSize: '120%' }}>
-            Для {selectedSize}x{selectedSize} пока никого
+            Для {selectedSize.label} пока никого
           </div>
         )}
       </div>

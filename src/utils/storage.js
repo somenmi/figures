@@ -1,24 +1,22 @@
 import bridge from '@vkontakte/vk-bridge';
 import supabase from '../utils/supabase';
 
-export const saveRating = async (gridSize, score) => {
+export const saveRating = async (size, score) => {
   try {
     const user = await bridge.send('VKWebAppGetUserInfo');
+    const sizeKey = `${size.width}x${size.height}`; // Создаем строковый ключ для размера
 
-    // 1. Проверяем текущий рекорд пользователя
     const { data: existing } = await supabase
       .from('ratings')
       .select('score')
       .eq('user_id', user.id)
-      .eq('grid_size', gridSize)
+      .eq('grid_size', sizeKey)
       .single();
 
-    // 2. Если рекорд не улучшен - выходим
     if (existing && existing.score >= score) {
       return;
     }
 
-    // 3. Сохраняем/обновляем результат
     const { error: upsertError } = await supabase
       .from('ratings')
       .upsert({
@@ -26,7 +24,7 @@ export const saveRating = async (gridSize, score) => {
         name: `${user.first_name}`,
         photo_url: user.photo_100,
         score,
-        grid_size: gridSize,
+        grid_size: sizeKey,
         updated_at: new Date().toISOString()
       }, {
         onConflict: 'user_id,grid_size'
@@ -34,11 +32,10 @@ export const saveRating = async (gridSize, score) => {
 
     if (upsertError) throw upsertError;
 
-    // 4. Удаляем результаты ниже ТОП-10
     const { data: allRatings } = await supabase
       .from('ratings')
       .select('id, score')
-      .eq('grid_size', gridSize)
+      .eq('grid_size', sizeKey)
       .order('score', { ascending: false });
 
     if (allRatings && allRatings.length > 10) {
@@ -56,12 +53,12 @@ export const saveRating = async (gridSize, score) => {
   }
 };
 
-export const getRatings = async (gridSize) => {
+export const getRatings = async (sizeKey) => {
   try {
     const { data, error } = await supabase
       .from('ratings')
       .select('*')
-      .eq('grid_size', gridSize)
+      .eq('grid_size', sizeKey)
       .order('score', { ascending: false })
       .limit(100);
 
@@ -72,6 +69,7 @@ export const getRatings = async (gridSize) => {
     return [];
   }
 };
+
 export const getTopRatings = async (gridSize) => {
   try {
     const { data, error } = await supabase
