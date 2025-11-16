@@ -11,6 +11,7 @@ function App() {
   const [currentColor, setCurrentColor] = useState(
     localStorage.getItem('buttonColor') || '#5181B8'
   );
+  const [gameKey, setGameKey] = useState(0); // Добавляем ключ для сброса игры
 
   useEffect(() => {
     const initVK = async () => {
@@ -31,14 +32,21 @@ function App() {
     localStorage.setItem('buttonColor', color);
   };
 
+  const handleStartGame = (size) => {
+    setGridSize(size);
+    setGameKey(prev => prev + 1); // Изменяем ключ для полного пересоздания GameScreen
+    setScreen('game');
+  };
+
+  const handleBackToMenu = () => {
+    setScreen('menu');
+  };
+
   return (
     <div className="app-container">
       {screen === 'menu' && (
         <MainMenu
-          onStartGame={(size) => {
-            setGridSize(size);
-            setScreen('game');
-          }}
+          onStartGame={handleStartGame}
           currentColor={currentColor}
           onColorChange={handleColorChange}
           onShowRules={() => setScreen('rules')}
@@ -48,8 +56,9 @@ function App() {
 
       {screen === 'game' && (
         <GameScreen
+          key={gameKey} // Ключ для принудительного пересоздания компонента
           size={gridSize}
-          onBackToMenu={() => setScreen('menu')}
+          onBackToMenu={handleBackToMenu}
         />
       )}
 

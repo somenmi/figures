@@ -22,17 +22,43 @@ const mergeShapes = (row) => {
   };
 };
 
+const addRandomShape = (grid) => {
+  const emptyCells = [];
+  grid.forEach((row, i) => row.forEach((cell, j) => {
+    if (cell === 0) emptyCells.push([i, j]);
+  }));
+
+  if (emptyCells.length === 0) return grid;
+
+  const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  const newGrid = grid.map(row => [...row]);
+  newGrid[i][j] = Math.random() > 0.5 ? 1 : 2;
+  return newGrid;
+};
+
 const GameScreen = ({ size, onBackToMenu }) => {
   const touchStartRef = useRef(null);
   const lastMoveTimeRef = useRef(0);
   const buttonColor = localStorage.getItem('buttonColor') || '#5181B8';
 
-  const [gameState, setGameState] = useState(() => ({
-    grid: addRandomShape(addRandomShape(Array(size).fill().map(() => Array(size).fill(0)))),
-    score: 0,
-    gameOver: false,
-    prevGrid: []
-  }));
+  const [gameState, setGameState] = useState(() => {
+    const initialGrid = Array(size).fill().map(() => Array(size).fill(0));
+    return {
+      grid: addRandomShape(addRandomShape(initialGrid)),
+      score: 0,
+      gameOver: false,
+      prevGrid: []
+    };
+  });
+
+  useEffect(() => {
+    setGameState({
+      grid: addRandomShape(addRandomShape(Array(size).fill().map(() => Array(size).fill(0)))),
+      score: 0,
+      gameOver: false,
+      prevGrid: []
+    });
+  }, [size]);
 
   const moveLeft = useCallback((grid) => {
     let totalScore = 0;
@@ -190,7 +216,12 @@ const GameScreen = ({ size, onBackToMenu }) => {
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      touchStartRef.current = null;
+      lastMoveTimeRef.current = 0;
+    };
   }, [gameState.gameOver, handleMove, moveDown, moveLeft, moveRight, moveUp]);
 
   const calculateCellSize = useCallback(() => {
@@ -301,18 +332,4 @@ const GameScreen = ({ size, onBackToMenu }) => {
   );
 };
 
-const addRandomShape = (grid) => {
-  const emptyCells = [];
-  grid.forEach((row, i) => row.forEach((cell, j) => {
-    if (cell === 0) emptyCells.push([i, j]);
-  }));
-
-  if (emptyCells.length === 0) return grid;
-
-  const [i, j] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-  const newGrid = grid.map(row => [...row]);
-  newGrid[i][j] = Math.random() > 0.5 ? 1 : 2;
-  return newGrid;
-};
-
-export default GameScreen;
+export default React.memo(GameScreen);
