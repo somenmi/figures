@@ -8,7 +8,12 @@ const RatingScreen = ({ onBack, buttonColor }) => {
   const [selectedSize, setSelectedSize] = useState(3);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const sizes = [3, 4, 5];
+  const sizes = [
+    { width: 3, height: 3, label: '3×3' },
+    { width: 4, height: 4, label: '4×4' },
+    { width: 3, height: 5, label: '3×5' },
+    { width: 4, height: 6, label: '4×6' }
+  ];
 
   useEffect(() => {
     const loadData = async () => {
@@ -51,14 +56,14 @@ const RatingScreen = ({ onBack, buttonColor }) => {
       <div className="size-selector">
         {sizes.map(size => (
           <Button
-            key={size}
+            key={`${size.width}x${size.height}`}
             style={{
               backgroundColor: buttonColor,
-              opacity: selectedSize === size ? 1 : 0.3
+              opacity: selectedSize.width === size.width && selectedSize.height === size.height ? 1 : 0.3
             }}
             onClick={() => setSelectedSize(size)}
           >
-            {size}x{size}
+            {size.label}
           </Button>
         ))}
       </div>

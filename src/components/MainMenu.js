@@ -10,7 +10,13 @@ const MainMenu = ({
   onColorChange,
   currentColor
 }) => {
-  const sizes = useMemo(() => [3, 4, 5], []);
+  const sizes = useMemo(() => [
+    { width: 3, height: 3, label: '3×3' },
+    { width: 4, height: 4, label: '4×4' },
+    { width: 3, height: 5, label: '3×5' },
+    { width: 4, height: 6, label: '4×6' }
+  ], []);
+
   const [buttonColor, setButtonColor] = useState(currentColor);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -35,22 +41,18 @@ const MainMenu = ({
   };
 
   const adjustColor = (hexColor, brightness = 1, contrast = 1) => {
-    // Преобразуем HEX в RGB
     let r = parseInt(hexColor.slice(1, 3), 16);
     let g = parseInt(hexColor.slice(3, 5), 16);
     let b = parseInt(hexColor.slice(5, 7), 16);
 
-    // Яркость (brightness)
     r = Math.min(255, Math.max(0, (r - 127.5) * brightness + 127.5));
     g = Math.min(255, Math.max(0, (g - 127.5) * brightness + 127.5));
     b = Math.min(255, Math.max(0, (b - 127.5) * brightness + 127.5));
 
-    // Контраст (contrast)
     r = Math.min(255, Math.max(0, (r - 127.5) * contrast + 127.5));
     g = Math.min(255, Math.max(0, (g - 127.5) * contrast + 127.5));
     b = Math.min(255, Math.max(0, (b - 127.5) * contrast + 127.5));
 
-    // Возвращаем HEX
     return `#${[r, g, b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
   };
 
@@ -60,11 +62,11 @@ const MainMenu = ({
     fontSize: '46px',
     fontWeight: 700,
     backgroundImage: `linear-gradient(
-  140deg,
-  ${buttonColor},
-  ${adjustColor(buttonColor, 1.2, 1.2)} 35%,
-  ${adjustColor(buttonColor, 1.6, 1.6)} 110%
-)`,
+      140deg,
+      ${buttonColor},
+      ${adjustColor(buttonColor, 1.2, 1.2)} 35%,
+      ${adjustColor(buttonColor, 1.6, 1.6)} 110%
+    )`,
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     display: 'inline-block',
@@ -83,16 +85,16 @@ const MainMenu = ({
       <div className="game-sizes-container">
         <Title level="2" className="section-title" style={{ marginBottom: '22px', fontSize: '20px', color: buttonColor }}>廾口乃升牙 凵厂尸丹:</Title>
         <div className="game-sizes">
-          {sizes.map(size => (
+          {sizes.map((size, index) => (
             <Button
-              key={size}
+              key={`${size.width}x${size.height}`}
               size="m"
               before={<Icon24Game />}
               className="main-menu-size-button"
               style={{ backgroundColor: buttonColor }}
               onClick={() => onStartGame(size)}
             >
-              {size}x{size}
+              {size.label}
             </Button>
           ))}
         </div>

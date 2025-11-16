@@ -7,7 +7,7 @@ import AudioController from './components/AudioController';
 
 function App() {
   const [screen, setScreen] = useState('menu');
-  const [gridSize, setGridSize] = useState(4);
+  const [gridSize, setGridSize] = useState({ width: 4, height: 4 });
   const [currentColor, setCurrentColor] = useState(
     localStorage.getItem('buttonColor') || '#5181B8'
   );
@@ -61,7 +61,7 @@ function App() {
 
       {screen === 'game' && (
         <GameScreen
-          key={`game-${gameKey}-${gridSize}`}
+          key={`game-${gameKey}-${gridSize.width}x${gridSize.height}`}
           size={gridSize}
           onBackToMenu={handleBackToMenu}
         />

@@ -18,6 +18,24 @@ const addRandomShape = (grid) => {
   return newGrid;
 };
 
+const mergeShapes = (row) => {
+  const newRow = [...row];
+  let scoreIncrease = 0;
+
+  for (let i = 0; i < newRow.length - 1; i++) {
+    if (newRow[i] === newRow[i + 1] && newRow[i] !== 0) {
+      newRow[i] *= 2;
+      scoreIncrease += newRow[i];
+      newRow[i + 1] = 0;
+    }
+  }
+
+  return {
+    mergedRow: newRow.filter(cell => cell !== 0),
+    scoreIncrease
+  };
+};
+
 const GameScreen = ({ size, onBackToMenu }) => {
   const touchStartRef = useRef(null);
   const lastMoveTimeRef = useRef(0);
@@ -25,17 +43,15 @@ const GameScreen = ({ size, onBackToMenu }) => {
   const buttonColor = localStorage.getItem('buttonColor') || '#5181B8';
 
   const [gameState, setGameState] = useState(() => ({
-    grid: addRandomShape(addRandomShape(Array(size).fill().map(() => Array(size).fill(0)))),
+    grid: addRandomShape(addRandomShape(Array(size.height).fill().map(() => Array(size.width).fill(0)))),
     score: 0,
     gameOver: false,
     prevGrid: []
   }));
 
   useEffect(() => {
-    console.log('GameScreen: Инициализация новой игры');
-
     setGameState({
-      grid: addRandomShape(addRandomShape(Array(size).fill().map(() => Array(size).fill(0)))),
+      grid: addRandomShape(addRandomShape(Array(size.height).fill().map(() => Array(size.width).fill(0)))),
       score: 0,
       gameOver: false,
       prevGrid: []
@@ -45,7 +61,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
     lastMoveTimeRef.current = 0;
 
     return () => {
-      console.log('GameScreen: Очистка игры');
       if (gameTimeoutRef.current) {
         clearTimeout(gameTimeoutRef.current);
         gameTimeoutRef.current = null;
@@ -112,12 +127,13 @@ const GameScreen = ({ size, onBackToMenu }) => {
   }, []);
 
   const isGameOver = useCallback((grid) => {
-    const size = grid.length;
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
+    const height = grid.length;
+    const width = grid[0].length;
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
         if (grid[i][j] === 0) return false;
-        if (j < size - 1 && grid[i][j] === grid[i][j + 1]) return false;
-        if (i < size - 1 && grid[i][j] === grid[i + 1][j]) return false;
+        if (j < width - 1 && grid[i][j] === grid[i][j + 1]) return false;
+        if (i < height - 1 && grid[i][j] === grid[i + 1][j]) return false;
       }
     }
     return true;
@@ -156,7 +172,7 @@ const GameScreen = ({ size, onBackToMenu }) => {
         gameOver
       };
     });
-  }, [isGameOver, onBackToMenu, size, moveLeft, moveRight, moveUp, moveDown]);
+  }, [isGameOver, onBackToMenu, size]);
 
   const handleTouchStart = useCallback((e) => {
     if (gameState.gameOver) return;
@@ -217,8 +233,9 @@ const GameScreen = ({ size, onBackToMenu }) => {
   }, [gameState.gameOver, handleMove, moveDown, moveLeft, moveRight, moveUp]);
 
   const calculateCellSize = useCallback(() => {
-    return Math.floor((Math.min(window.innerWidth, 500) * 0.9) / size);
-  }, [size]);
+    const maxDimension = Math.max(size.width, size.height);
+    return Math.floor((Math.min(window.innerWidth, 500) * 0.9) / maxDimension);
+  }, [size.width, size.height]);
 
   const [cellSize, setCellSize] = useState(calculateCellSize());
 
@@ -322,24 +339,6 @@ const GameScreen = ({ size, onBackToMenu }) => {
       )}
     </div>
   );
-};
-
-const mergeShapes = (row) => {
-  const newRow = [...row];
-  let scoreIncrease = 0;
-
-  for (let i = 0; i < newRow.length - 1; i++) {
-    if (newRow[i] === newRow[i + 1] && newRow[i] !== 0) {
-      newRow[i] *= 2;
-      scoreIncrease += newRow[i];
-      newRow[i + 1] = 0;
-    }
-  }
-
-  return {
-    mergedRow: newRow.filter(cell => cell !== 0),
-    scoreIncrease
-  };
 };
 
 export default React.memo(GameScreen);
