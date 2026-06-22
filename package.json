@@ -22,7 +22,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "vercel": "^28.4.7"
+    "vercel": "^54.14.5"
   },
   "scripts": {
     "start": "react-scripts start",
