@@ -10,7 +10,6 @@
     "@testing-library/user-event": "^13.5.0",
     "@vkontakte/vk-bridge": "^2.15.6",
     "@vkontakte/vkui": "^7.3.0",
-    "express": "^5.1.0",
     "lowdb": "^5.0.5",
     "micro": "^9.4.0",
     "react": "^18.2.0",
@@ -22,6 +21,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "express": "^5.2.1",
+    "http-proxy-middleware": "^4.1.1",
     "vercel": "^54.14.5"
   },
   "scripts": {
